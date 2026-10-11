@@ -5,6 +5,12 @@ const config: CapacitorConfig = {
   appName: 'BIS Tracker',
   webDir: 'dist',
   backgroundColor: '#111111',
+  plugins: {
+    LocalNotifications: {
+      smallIcon: 'ic_stat_bis',
+      iconColor: '#EF9F27',
+    },
+  },
 }
 
 export default config

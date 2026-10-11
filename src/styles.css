@@ -125,3 +125,54 @@ h3 { font-size: 16px; margin: 4px 0 0; color: var(--text-muted); font-weight: 60
 .banner { display: flex; align-items: center; gap: 12px; padding: 12px 14px; border-radius: 14px; background: #3a2a10; color: #ffd9a0; font-size: 15px; }
 .confirm { padding: 12px; border-radius: 14px; border: 1px solid var(--accent); }
 .confirm p { margin: 0; }
+
+/* ---- Training ---- */
+.card-link { display: flex; flex-direction: column; gap: 2px; color: var(--text); text-decoration: none; border-color: var(--accent); }
+.day-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.day-grid .btn { padding: 0 10px; font-size: 15px; }
+.list { list-style: none; margin: 0; padding: 0; }
+.list.card { padding: 4px 16px; }
+.list-row { display: flex; justify-content: space-between; align-items: center; gap: 12px; min-height: 52px; padding: 6px 0; border-bottom: 1px solid var(--border); color: var(--text); text-decoration: none; }
+.list li:last-child .list-row, .list li.list-row:last-child { border-bottom: 0; }
+.row-actions { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+.plain { background: none; border: 0; color: inherit; font: inherit; padding: 0; text-align: left; width: 100%; min-height: 40px; cursor: pointer; }
+.field { display: flex; flex-direction: column; gap: 6px; }
+.field span { font-size: 14px; color: var(--text-muted); }
+.field input, .field select, .field textarea {
+  min-height: var(--tap); padding: 0 14px; border-radius: 14px; border: 1px solid var(--border);
+  background: var(--bg); color: var(--text); font: inherit; font-size: 18px;
+}
+.field textarea { padding: 12px 14px; min-height: 90px; }
+.field input:focus, .field select:focus, .field textarea:focus { outline: 0; border-color: var(--accent); }
+
+.workout { padding-bottom: 80px; }
+.ex-name { font-size: 18px; font-weight: 700; color: var(--text); text-decoration: none; }
+.ex-done { border-color: #2c5a44; }
+.last { background: var(--bg); border-radius: 10px; padding: 8px 10px; }
+.badge-up { background: #10302a; color: var(--success); border-radius: 10px; padding: 8px 10px; font-size: 14px; font-weight: 600; }
+.set-head, .set-row { display: grid; grid-template-columns: 18px 1.25fr 1fr 48px; gap: 6px; align-items: center; }
+.set-head span { text-align: center; }
+.set-num { text-align: center; color: var(--text-muted); font-weight: 700; }
+.set-row.set-done .mini { border-color: #2c5a44; }
+.check { height: 52px; border-radius: 12px; border: 1px solid var(--border); background: var(--surface-2); color: var(--text-muted); font-size: 22px; cursor: pointer; }
+.set-done .check { background: var(--success); border-color: var(--success); color: #0b2018; }
+
+.mini { display: grid; grid-template-columns: 30px 1fr 30px; align-items: center; height: 52px; border: 1px solid var(--border); border-radius: 12px; background: var(--bg); overflow: hidden; }
+.mini button { height: 100%; border: 0; background: var(--surface-2); color: var(--text); font-size: 22px; cursor: pointer; }
+.mini button:active { background: var(--border); }
+.mini label { display: flex; align-items: baseline; justify-content: center; min-width: 0; }
+.mini input { width: 100%; min-width: 0; padding: 0; text-align: center; background: none; border: 0; outline: 0; color: var(--text); font: inherit; font-size: 18px; font-weight: 700; letter-spacing: -0.5px; }
+.mini label span { font-size: 12px; color: var(--text-muted); }
+
+.rest-bar { position: relative; margin: 0 8px 6px; border-radius: 14px; background: var(--surface-2); border: 1px solid var(--accent); overflow: hidden; }
+.rest-progress { position: absolute; inset: 0 auto 0 0; background: #3a2a10; transition: width 0.25s linear; }
+.rest-content { position: relative; display: flex; align-items: center; gap: 8px; padding: 8px 10px 8px 14px; }
+.rest-content > div { flex: 1; }
+.rest-content strong { font-size: 24px; font-variant-numeric: tabular-nums; }
+.rest-done { border-color: var(--success); }
+.rest-done .rest-progress { background: #10302a; }
+
+.chart { width: 100%; height: auto; display: block; margin-top: 8px; }
+.chart-grid { stroke: var(--border); stroke-width: 1; }
+.chart-label { fill: var(--text-muted); font-size: 11px; }
+.chart-band { fill: rgba(93, 202, 138, 0.12); }

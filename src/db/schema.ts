@@ -27,6 +27,9 @@ export interface Settings {
   targets: Record<Phase, MacroTargets>
   backupReminderDays: number
   lastBackupAt?: string
+  /** Training: weeks are counted from the last deload (or the first workout). */
+  lastDeloadDate?: string
+  deloadUntil?: string
   createdAt: string
   updatedAt: string
 }
@@ -34,6 +37,68 @@ export interface Settings {
 export interface WeightEntry extends BaseRecord {
   date: string
   kg: number
+}
+
+// ---- Training ----
+
+export type DayKind = 'lift' | 'cardio' | 'rest'
+
+export interface ExerciseTemplate {
+  id: string
+  name: string
+  sets: number
+  repMin: number
+  repMax: number
+  /** Seconds of rest after each set. */
+  restSec: number
+  /** kg to add when you hit the top of the rep range on every set. */
+  increment: number
+  /** Exercises sharing a letter are done back to back as a superset. */
+  superset?: string
+  notes?: string
+}
+
+export interface DayTemplate {
+  id: string
+  /** 1 = Monday … 7 = Sunday */
+  weekday: number
+  name: string
+  kind: DayKind
+  exercises: ExerciseTemplate[]
+}
+
+export interface Program extends BaseRecord {
+  days: DayTemplate[]
+}
+
+export interface Session extends BaseRecord {
+  date: string
+  dayId: string
+  dayName: string
+  startedAt: string
+  finishedAt?: string
+  deload: boolean
+}
+
+export interface SetEntry extends BaseRecord {
+  sessionId: string
+  exerciseId: string
+  exerciseName: string
+  date: string
+  setIndex: number
+  weight: number
+  reps: number
+  done: boolean
+}
+
+export interface CardioEntry extends BaseRecord {
+  date: string
+  type: string
+  minutes: number
+  inclinePct?: number
+  speedKph?: number
+  avgHr?: number
+  notes?: string
 }
 
 // Tables for later phases are declared now so the first install already has
@@ -46,10 +111,10 @@ export class BisDb extends Dexie {
   foods!: EntityTable<Later, 'id'>
   meals!: EntityTable<Later, 'id'>
   foodLog!: EntityTable<Later, 'id'>
-  program!: EntityTable<Later, 'id'>
-  sessions!: EntityTable<Later, 'id'>
-  sets!: EntityTable<Later, 'id'>
-  cardio!: EntityTable<Later, 'id'>
+  program!: EntityTable<Program, 'id'>
+  sessions!: EntityTable<Session, 'id'>
+  sets!: EntityTable<SetEntry, 'id'>
+  cardio!: EntityTable<CardioEntry, 'id'>
   cycles!: EntityTable<Later, 'id'>
   injections!: EntityTable<Later, 'id'>
   bp!: EntityTable<Later, 'id'>
@@ -75,6 +140,10 @@ export class BisDb extends Dexie {
       bloodPanels: 'id, date',
       supplements: 'id, order',
       supplementLog: 'id, date, [date+supplementId]',
+    })
+    // v2: look up an exercise's history by date quickly
+    this.version(2).stores({
+      sets: 'id, sessionId, exerciseId, date, [exerciseId+date]',
     })
   }
 }
