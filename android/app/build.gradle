@@ -32,9 +32,11 @@ android {
         release {
             if (releaseStoreFile) {
                 storeFile file(releaseStoreFile)
-                storePassword signingValue('storePassword', 'BIS_KEYSTORE_PASSWORD')
+                def storePass = signingValue('storePassword', 'BIS_KEYSTORE_PASSWORD')
+                storePassword storePass
                 keyAlias signingValue('keyAlias', 'BIS_KEY_ALIAS')
-                keyPassword signingValue('keyPassword', 'BIS_KEY_PASSWORD')
+                // Modern (PKCS12) keystores use one password for both, so fall back to it.
+                keyPassword signingValue('keyPassword', 'BIS_KEY_PASSWORD') ?: storePass
             }
         }
     }

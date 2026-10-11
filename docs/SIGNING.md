@@ -25,12 +25,12 @@ Make a private folder outside the project for the key:
 mkdir -p ~/bis-keys && chmod 700 ~/bis-keys
 ```
 
-Create the key. It asks for a password (pick a long one and save it in your
-password manager straight away), then your name and location. You can leave the
-location questions blank, and the name can be your GitHub username.
+Create the key. `-dname` keeps personal details (like your town) out of the
+certificate, which anyone can read from the APK. It asks for a password (pick a long one and save it in your
+password manager straight away), twice. Typing works if pasting into the terminal doesn't.
 
 ```bash
-keytool -genkeypair -v -keystore ~/bis-keys/bis-release.jks -alias bis -keyalg RSA -keysize 4096 -validity 10000
+keytool -genkeypair -v -keystore ~/bis-keys/bis-release.jks -alias bis -keyalg RSA -keysize 4096 -validity 10000 -dname "CN=yourname"
 ```
 
 `-validity 10000` = about 27 years. Modern keystores use one password for both
@@ -69,18 +69,12 @@ The key file itself, converted to text:
 base64 -i ~/bis-keys/bis-release.jks | gh secret set KEYSTORE_BASE64
 ```
 
-The next three commands each prompt you to paste a value (it won't show on
+The next two commands each prompt you to paste a value (it won't show on
 screen and won't go into your shell history):
 
 ```bash
 gh secret set KEYSTORE_PASSWORD
 ```
-
-```bash
-gh secret set KEY_PASSWORD
-```
-
-(same password as above)
 
 ```bash
 gh secret set KEY_ALIAS

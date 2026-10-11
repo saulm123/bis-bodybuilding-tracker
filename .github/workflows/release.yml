@@ -55,7 +55,6 @@ jobs:
           BIS_KEYSTORE_FILE: ${{ runner.temp }}/release.jks
           BIS_KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
           BIS_KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
-          BIS_KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
         run: ./gradlew --no-daemon assembleFossRelease
 
       - name: Verify signature and prepare files
