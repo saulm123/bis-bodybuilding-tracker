@@ -5,7 +5,7 @@
 An offline macro, training and health tracker for Android (and an installable web app).
 All data stays on your phone. No accounts, no analytics, no Google services.
 
-> Status: early development. Phase 0, the app shell and release pipeline, is done.
+> Status: early development. v0.1.0 is the app shell; features arrive phase by phase.
 
 ## Install
 
@@ -17,7 +17,7 @@ All data stays on your phone. No accounts, no analytics, no Google services.
 Signing certificate SHA-256 fingerprint (check this in Obtainium / AppVerifier):
 
 ```
-(added after the release key is created)
+C9:E4:91:1E:0B:50:65:E8:05:AF:F8:2C:53:97:37:6F:83:A4:6C:2A:33:CB:A3:16:2B:2C:B4:6A:1F:75:6A:9F
 ```
 
 ## Develop
