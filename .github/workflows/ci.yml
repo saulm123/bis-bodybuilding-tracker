@@ -27,7 +27,7 @@ jobs:
       - name: Build debug APK
         working-directory: android
         run: ./gradlew --no-daemon assembleFossDebug
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: bis-tracker-debug-apk
           path: android/app/build/outputs/apk/foss/debug/*.apk
