@@ -1,0 +1,14 @@
+<!-- BIS Tracker icon master (concept C). 108x108 = Android adaptive icon canvas.
+     Everything sits inside the 66dp safe circle centred at 54,54.
+     The "BIS" text gets converted to outlines in Phase 0 so no font is needed. -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 108 108">
+  <rect id="background" width="108" height="108" fill="#111111"/>
+  <g id="foreground">
+    <text x="54" y="52" text-anchor="middle" font-family="Archivo Black, Arial Black, sans-serif" font-size="24" fill="#FFFFFF">BIS</text>
+    <rect x="28" y="61" width="52" height="4" fill="#B4B2A9"/>
+    <rect x="28" y="56" width="5" height="14" rx="1" fill="#EF9F27"/>
+    <rect x="75" y="56" width="5" height="14" rx="1" fill="#EF9F27"/>
+    <rect x="24" y="59" width="4" height="8" rx="1" fill="#EF9F27"/>
+    <rect x="80" y="59" width="4" height="8" rx="1" fill="#EF9F27"/>
+  </g>
+</svg>
