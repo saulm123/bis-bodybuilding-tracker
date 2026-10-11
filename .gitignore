@@ -1,0 +1,20 @@
+node_modules/
+dist/
+dev-dist/
+*.log
+.DS_Store
+
+# Signing keys and secrets: never commit these
+*.jks
+*.keystore
+keystore.properties
+.env*.local
+
+# Android build output
+android/.gradle/
+android/build/
+android/app/build/
+android/local.properties
+android/capacitor-cordova-android-plugins/build/
+android/.idea/
+*.iml

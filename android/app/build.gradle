@@ -1,0 +1,91 @@
+apply plugin: 'com.android.application'
+
+// Release signing. CI passes the key in through environment variables;
+// locally you can create android/keystore.properties (never committed).
+def keystoreProps = new Properties()
+def keystorePropsFile = rootProject.file('keystore.properties')
+if (keystorePropsFile.exists()) {
+    keystorePropsFile.withInputStream { keystoreProps.load(it) }
+}
+def signingValue = { String prop, String env -> keystoreProps.getProperty(prop) ?: System.getenv(env) }
+def releaseStoreFile = signingValue('storeFile', 'BIS_KEYSTORE_FILE')
+
+android {
+    namespace = "com.bis.bodybuildingtracker"
+    compileSdk = rootProject.ext.compileSdkVersion
+    defaultConfig {
+        applicationId "com.bis.bodybuildingtracker"
+        minSdkVersion rootProject.ext.minSdkVersion
+        targetSdkVersion rootProject.ext.targetSdkVersion
+        // Bump both for every release. versionCode = major*10000 + minor*100 + patch.
+        // F-Droid reads these from this file, so they must live here, not in CI.
+        versionCode 100
+        versionName "0.1.0"
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        aaptOptions {
+             // Files and dirs to omit from the packaged assets dir, modified to accommodate modern web apps.
+             // Default: https://android.googlesource.com/platform/frameworks/base/+/282e181b58cf72b6ca770dc7ca5f91f135444502/tools/aapt/AaptAssets.cpp#61
+            ignoreAssetsPattern = '!.svn:!.git:!.ds_store:!*.scc:.*:!CVS:!thumbs.db:!picasa.ini:!*~'
+        }
+    }
+    signingConfigs {
+        release {
+            if (releaseStoreFile) {
+                storeFile file(releaseStoreFile)
+                storePassword signingValue('storePassword', 'BIS_KEYSTORE_PASSWORD')
+                keyAlias signingValue('keyAlias', 'BIS_KEY_ALIAS')
+                keyPassword signingValue('keyPassword', 'BIS_KEY_PASSWORD')
+            }
+        }
+    }
+
+    // foss: GitHub / F-Droid / IzzyOnDroid build with every feature.
+    // play: Google Play build without the cycle log (different app ID so the two never clash).
+    flavorDimensions = ["store"]
+    productFlavors {
+        foss {
+            dimension "store"
+        }
+        play {
+            dimension "store"
+            applicationIdSuffix ".play"
+        }
+    }
+
+    // Keep builds reproducible and free of Google-only metadata (F-Droid requirement).
+    dependenciesInfo {
+        includeInApk = false
+        includeInBundle = false
+    }
+
+    buildTypes {
+        release {
+            if (releaseStoreFile) {
+                signingConfig signingConfigs.release
+            }
+            vcsInfo.include false
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+}
+
+repositories {
+    flatDir{
+        dirs '../capacitor-cordova-android-plugins/src/main/libs', 'libs'
+    }
+}
+
+dependencies {
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
+    implementation "androidx.appcompat:appcompat:$androidxAppCompatVersion"
+    implementation "androidx.coordinatorlayout:coordinatorlayout:$androidxCoordinatorLayoutVersion"
+    implementation "androidx.core:core-splashscreen:$coreSplashScreenVersion"
+    implementation project(':capacitor-android')
+    testImplementation "junit:junit:$junitVersion"
+    androidTestImplementation "androidx.test.ext:junit:$androidxJunitVersion"
+    androidTestImplementation "androidx.test.espresso:espresso-core:$androidxEspressoCoreVersion"
+    implementation project(':capacitor-cordova-android-plugins')
+}
+
+apply from: 'capacitor.build.gradle'

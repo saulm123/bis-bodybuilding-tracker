@@ -1,0 +1,33 @@
+# Runs on every push to main and every pull request: checks the app builds
+# and produces an unsigned debug APK you can download from the run page.
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: 21
+      - run: npm ci
+      - run: npm test
+      - run: npm run build:foss
+      - run: npx cap sync android
+      - name: Build debug APK
+        working-directory: android
+        run: ./gradlew --no-daemon assembleFossDebug
+      - uses: actions/upload-artifact@v4
+        with:
+          name: bis-tracker-debug-apk
+          path: android/app/build/outputs/apk/foss/debug/*.apk

@@ -1,0 +1,27 @@
+BIS Bodybuilding Tracker is a fast, offline tracker for people who lift. Everything is stored on your phone. There are no accounts, no ads, no analytics and no Google services.
+
+<b>Nutrition</b>
+<ul>
+<li>Daily calorie, protein, carb and fat targets with a bulk/cut switch</li>
+<li>Food search and barcode scanning using the free Open Food Facts database</li>
+<li>Saved meals and one-tap favourites</li>
+<li>Weight log with a 7-day average trend and calorie adjustment suggestions</li>
+</ul>
+
+<b>Training</b>
+<ul>
+<li>Editable 5-day split with sets, reps and weight logging</li>
+<li>Last session's numbers shown next to every exercise</li>
+<li>"Add weight" flag when you hit the top of the rep range</li>
+<li>Rest timer, deload reminders and cardio log</li>
+</ul>
+
+<b>Health</b>
+<ul>
+<li>Blood pressure and resting heart rate with weekly averages</li>
+<li>Blood test tracker with reminders</li>
+<li>Daily supplement checklist</li>
+</ul>
+
+<b>Privacy</b>
+The only network request the app makes is looking up foods on Open Food Facts. Back up and restore all your data as a JSON file.
