@@ -11,6 +11,9 @@ if (!Capacitor.isNativePlatform()) {
   import('virtual:pwa-register').then(({ registerSW }) => registerSW({ immediate: true }))
 }
 
+// Ask the browser not to clear our data when storage runs low.
+navigator.storage?.persist?.().catch(() => {})
+
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <HashRouter>

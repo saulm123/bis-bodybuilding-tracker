@@ -1,6 +1,9 @@
 import { NavLink, Navigate, Route, Routes } from 'react-router-dom'
 import Placeholder from './pages/Placeholder'
 import More from './pages/More'
+import Today from './pages/Today'
+import Onboarding from './pages/Onboarding'
+import { useSettings } from './db/settings'
 
 const tabs = [
   { to: '/today', label: 'Today', icon: '◎' },
@@ -11,11 +14,15 @@ const tabs = [
 ]
 
 export default function App() {
+  const settings = useSettings()
+  if (!settings) return null // first database read takes a few ms
+  if (!settings.onboarded) return <Onboarding />
+
   return (
     <div className="app">
       <main className="screen">
         <Routes>
-          <Route path="/today" element={<Placeholder title="Today" phase="Phases 3–5" />} />
+          <Route path="/today" element={<Today />} />
           <Route path="/train" element={<Placeholder title="Train" phase="Phase 2" />} />
           <Route path="/food" element={<Placeholder title="Food" phase="Phase 3" />} />
           <Route path="/health" element={<Placeholder title="Health" phase="Phase 5" />} />
