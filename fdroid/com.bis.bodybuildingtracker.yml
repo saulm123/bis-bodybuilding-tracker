@@ -18,9 +18,9 @@ Repo: https://github.com/saulm123/bis-bodybuilding-tracker.git
 Binaries: https://github.com/saulm123/bis-bodybuilding-tracker/releases/download/v%v/bis-tracker-v%v.apk
 
 Builds:
-  - versionName: 0.8.0
-    versionCode: 800
-    commit: v0.8.0
+  - versionName: 0.8.1
+    versionCode: 801
+    commit: v0.8.1
     subdir: android/app
     sudo:
       - apt-get update
@@ -42,5 +42,5 @@ AllowedAPKSigningKeys: c9e4911e0b5065e805aff82c5397376f83a46c2a33cba3162b2cb46a1
 
 AutoUpdateMode: Version
 UpdateCheckMode: Tags ^v[0-9.]+$
-CurrentVersion: 0.8.0
-CurrentVersionCode: 800
+CurrentVersion: 0.8.1
+CurrentVersionCode: 801

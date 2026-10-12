@@ -2,6 +2,7 @@ import { useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import type { ExerciseTemplate } from '../db/schema'
 import { demoFor, youtubeSearchUrl } from '../training/demos'
+import DemoVideo from './DemoVideo'
 
 /** Pop-up showing how to do an exercise: clip or animated photos, plus form tips. */
 export default function DemoSheet({ exercise, onClose }: { exercise: Pick<ExerciseTemplate, 'id' | 'name'>; onClose: () => void }) {
@@ -23,7 +24,7 @@ export default function DemoSheet({ exercise, onClose }: { exercise: Pick<Exerci
           <>
             <div className="demo-media">
               {demo.clip ? (
-                <video src={`demos/${demo.slug}/clip.mp4`} autoPlay loop muted playsInline poster={`demos/${demo.slug}/0.jpg`} />
+                <DemoVideo src={`demos/${demo.slug}/clip.mp4`} poster={`demos/${demo.slug}/0.jpg`} label={`${exercise.name} demo video`} />
               ) : (
                 <>
                   <img src={`demos/${demo.slug}/0.jpg`} alt={`${exercise.name}: start position`} />

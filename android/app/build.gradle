@@ -20,8 +20,8 @@ android {
         targetSdkVersion rootProject.ext.targetSdkVersion
         // Bump both for every release. versionCode = major*10000 + minor*100 + patch.
         // F-Droid reads these from this file, so they must live here, not in CI.
-        versionCode 800
-        versionName "0.8.0"
+        versionCode 801
+        versionName "0.8.1"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         aaptOptions {
              // Files and dirs to omit from the packaged assets dir, modified to accommodate modern web apps.

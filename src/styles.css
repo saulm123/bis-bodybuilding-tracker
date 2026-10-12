@@ -372,3 +372,4 @@ h1 { font-family: var(--display); font-weight: 400; letter-spacing: -0.3px; }
 .big-number { font-family: var(--display); font-weight: 400; font-size: 26px; }
 .checkin-due { border-color: var(--accent); }
 .qr { width: 220px; max-width: 70%; align-self: center; border-radius: 12px; background: #fff; padding: 8px; }
+.play-overlay { position: absolute; inset: 0; margin: auto; width: 72px; height: 72px; border-radius: 50%; border: 0; background: rgba(0, 0, 0, 0.55); color: #fff; font-size: 30px; cursor: pointer; }
