@@ -101,6 +101,53 @@ export interface CardioEntry extends BaseRecord {
   notes?: string
 }
 
+// ---- Nutrition ----
+
+export interface Per100g {
+  kcal: number
+  protein: number
+  carbs: number
+  fiber: number
+  fat: number
+}
+
+export interface Food extends BaseRecord {
+  name: string
+  brand?: string
+  barcode?: string
+  per100: Per100g
+  /** US/Canadian labels count fibre inside carbs; EU/UK labels don't. */
+  carbsIncludeFiber: boolean
+  servingG?: number
+  source: 'off' | 'custom'
+  favourite?: boolean
+  lastUsedAt?: string
+}
+
+/** Macros are copied in when logged, so editing a food later doesn't change history. */
+export interface FoodLogEntry extends BaseRecord {
+  date: string
+  name: string
+  foodId?: string
+  grams?: number
+  kcal: number
+  protein: number
+  netCarbs: number
+  fat: number
+}
+
+export interface MealItem {
+  foodId: string
+  name: string
+  grams: number
+}
+
+export interface Meal extends BaseRecord {
+  name: string
+  favourite: boolean
+  items: MealItem[]
+}
+
 // Tables for later phases are declared now so the first install already has
 // them. Their record types get filled in as each phase is built.
 type Later = BaseRecord & Record<string, unknown>
@@ -108,9 +155,9 @@ type Later = BaseRecord & Record<string, unknown>
 export class BisDb extends Dexie {
   settings!: EntityTable<Settings, 'id'>
   weights!: EntityTable<WeightEntry, 'id'>
-  foods!: EntityTable<Later, 'id'>
-  meals!: EntityTable<Later, 'id'>
-  foodLog!: EntityTable<Later, 'id'>
+  foods!: EntityTable<Food, 'id'>
+  meals!: EntityTable<Meal, 'id'>
+  foodLog!: EntityTable<FoodLogEntry, 'id'>
   program!: EntityTable<Program, 'id'>
   sessions!: EntityTable<Session, 'id'>
   sets!: EntityTable<SetEntry, 'id'>
@@ -144,6 +191,10 @@ export class BisDb extends Dexie {
     // v2: look up an exercise's history by date quickly
     this.version(2).stores({
       sets: 'id, sessionId, exerciseId, date, [exerciseId+date]',
+    })
+    // v3: recently used foods
+    this.version(3).stores({
+      foods: 'id, barcode, name, updatedAt, lastUsedAt',
     })
   }
 }

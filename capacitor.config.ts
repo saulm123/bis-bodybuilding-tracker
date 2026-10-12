@@ -6,6 +6,10 @@ const config: CapacitorConfig = {
   webDir: 'dist',
   backgroundColor: '#111111',
   plugins: {
+    // Native networking for Open Food Facts requests (its search service has no CORS).
+    CapacitorHttp: {
+      enabled: true,
+    },
     LocalNotifications: {
       smallIcon: 'ic_stat_bis',
       iconColor: '#EF9F27',

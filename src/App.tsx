@@ -10,6 +10,12 @@ import { DayEditor, ProgramEditor } from './pages/train/ProgramEditor'
 import ExerciseHistory from './pages/train/ExerciseHistory'
 import CardioLog from './pages/train/CardioLog'
 import RestTimerBar from './components/RestTimerBar'
+import FoodDay from './pages/food/FoodDay'
+import AddFood from './pages/food/AddFood'
+import FoodItem from './pages/food/FoodItem'
+import QuickAdd from './pages/food/QuickAdd'
+import NewFood from './pages/food/NewFood'
+import Meals from './pages/food/Meals'
 
 const tabs = [
   { to: '/today', label: 'Today', icon: '◎' },
@@ -35,7 +41,12 @@ export default function App() {
           <Route path="/train/program/:dayId" element={<DayEditor />} />
           <Route path="/train/exercise/:exerciseId" element={<ExerciseHistory />} />
           <Route path="/train/cardio" element={<CardioLog />} />
-          <Route path="/food" element={<Placeholder title="Food" phase="Phase 3" />} />
+          <Route path="/food" element={<FoodDay />} />
+          <Route path="/food/add" element={<AddFood />} />
+          <Route path="/food/item/:foodId" element={<FoodItem />} />
+          <Route path="/food/quick" element={<QuickAdd />} />
+          <Route path="/food/new" element={<NewFood />} />
+          <Route path="/food/meals" element={<Meals />} />
           <Route path="/health" element={<Placeholder title="Health" phase="Phase 5" />} />
           <Route path="/more" element={<More />} />
           <Route path="*" element={<Navigate to="/today" replace />} />
