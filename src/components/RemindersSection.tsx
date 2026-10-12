@@ -25,6 +25,7 @@ export default function RemindersSection({ settings }: { settings: Settings }) {
       {!notificationsSupported() && <p className="muted small">Notifications work in the Android app. The web version shows reminders when you open it.</p>}
       <TimeToggle label="Daily supplements" value={settings.supplementReminder} onChange={(supplementReminder) => saveSettings({ supplementReminder })} />
       {HAS_CYCLE && <TimeToggle label="Injection days" value={settings.injectionReminder} onChange={(injectionReminder) => saveSettings({ injectionReminder })} />}
+      <TimeToggle label="Weekly check-in (on your check-in day)" value={settings.checkInReminder} onChange={(checkInReminder) => saveSettings({ checkInReminder })} />
       <p className="muted small">Blood test reminders are sent at 9:00 on the due date. Rest timer alerts are always on.</p>
       <Stepper
         label={HAS_CYCLE ? 'Routine bloods every (when no cycle is set)' : 'Routine bloods every'}

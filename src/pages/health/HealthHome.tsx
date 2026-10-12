@@ -8,6 +8,7 @@ import { bloodsDue, bpLevel, dosesFor, weeklyBp } from '../../health/schedule'
 import { currentCycle } from '../../health/store'
 import { useTrend } from '../../weight/useTrend'
 import { unitHelpers } from '../../lib/units'
+import { checkInDue } from '../../checkin/store'
 
 const FOSS = import.meta.env.VITE_FLAVOR !== 'play'
 
@@ -20,6 +21,7 @@ export default function HealthHome() {
   // The cycle log is FOSS-only and opt-in (Settings → Extra features).
   const HAS_CYCLE = FOSS && !!settings?.showCycleLog
   const cycle = useLiveQuery(() => (HAS_CYCLE ? currentCycle() : undefined), [HAS_CYCLE])
+  const lastCheckIn = useLiveQuery(() => db.checkIns.orderBy('date').last().then((c) => c ?? null), [])
   const injections = useLiveQuery(() => (cycle ? db.injections.where('cycleId').equals(cycle.id).toArray() : []), [cycle?.id])
   if (!settings || !bp || !panels || !injections) return null
   const u = unitHelpers(settings.units)
@@ -43,6 +45,16 @@ export default function HealthHome() {
         </div>
         <span className="muted small">{trend?.rate ? `${trend.rate.perWeek >= 0 ? '+' : ''}${u.fromKg(trend.rate.perWeek).toFixed(2)} ${u.w}/wk` : '7-day avg'}</span>
       </Link>
+
+      {lastCheckIn !== undefined && (
+        <Link to="/checkins" className="card card-tile">
+          <div>
+            <span className="muted small">Weekly check-in · photos + weight</span>
+            <strong>{lastCheckIn ? `Last: ${formatDate(lastCheckIn.date)}` : 'Start your first'}</strong>
+          </div>
+          {checkInDue(lastCheckIn?.date, today, settings.checkInDay ?? 1) && <span className="small status-due">Due</span>}
+        </Link>
+      )}
 
       <Link to="/health/bp" className="card card-tile">
         <div>

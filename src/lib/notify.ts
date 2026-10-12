@@ -31,6 +31,7 @@ export async function cancelNotifications(ids: number[]): Promise<void> {
 export const NOTIFY = {
   restTimer: 1001,
   supplementsDaily: 2001,
+  checkInWeekly: 2002,
   // Injection reminders use 3000-3099, bloods reminders 4000-4099.
   injectionBase: 3000,
   bloodsBase: 4000,

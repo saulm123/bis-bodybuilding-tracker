@@ -59,6 +59,21 @@ export default function More() {
         <Link to="/badges" className="btn btn-block">🏅 Badges</Link>
       </div>
 
+      <div className="card stack">
+        <h2>Weekly check-in</h2>
+        <label className="field">
+          <span>Check-in day</span>
+          <select value={settings.checkInDay ?? 1} onChange={(e) => saveSettings({ checkInDay: Number(e.target.value) })}>
+            {['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'].map((d, i) => <option key={d} value={i + 1}>{d}</option>)}
+          </select>
+        </label>
+        <label className="toggle">
+          <input type="checkbox" checked={settings.blurPhotos ?? true} onChange={(e) => saveSettings({ blurPhotos: e.target.checked })} />
+          <span>Blur progress photos until tapped (handy at the gym)</span>
+        </label>
+        <Link to="/checkins" className="btn btn-block">📸 Check-ins and photos</Link>
+      </div>
+
       {import.meta.env.VITE_FLAVOR !== 'play' && (
         <div className="card stack">
           <h2>Extra features</h2>

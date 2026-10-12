@@ -21,7 +21,7 @@ const range = (from: number, n: number) => Array.from({ length: n }, (_, i) => f
  */
 export async function syncReminders(settings: Settings): Promise<void> {
   if (!notificationsSupported()) return
-  await cancelNotifications([NOTIFY.supplementsDaily, ...range(NOTIFY.injectionBase, 30), ...range(NOTIFY.bloodsBase, 5)])
+  await cancelNotifications([NOTIFY.supplementsDaily, NOTIFY.checkInWeekly, ...range(NOTIFY.injectionBase, 30), ...range(NOTIFY.bloodsBase, 5)])
 
   const notifications: Parameters<typeof LocalNotifications.schedule>[0]['notifications'] = []
   const now = Date.now()
@@ -29,6 +29,13 @@ export async function syncReminders(settings: Settings): Promise<void> {
   if (settings.supplementReminder) {
     const [hour, minute] = settings.supplementReminder.split(':').map(Number)
     notifications.push({ id: NOTIFY.supplementsDaily, title: 'Supplements', body: 'Tick off today’s supplements.', schedule: { on: { hour, minute }, allowWhileIdle: true } })
+  }
+
+  if (settings.checkInReminder) {
+    const [hour, minute] = settings.checkInReminder.split(':').map(Number)
+    // Capacitor counts weekdays from Sunday = 1; ours start Monday = 1.
+    const weekday = ((settings.checkInDay ?? 1) % 7) + 1
+    notifications.push({ id: NOTIFY.checkInWeekly, title: 'Weekly check-in', body: 'Time for your photos and weigh-in.', schedule: { on: { weekday, hour, minute }, allowWhileIdle: true } })
   }
 
   const cycle = HAS_CYCLE_LOG && settings.showCycleLog ? await currentCycle() : undefined

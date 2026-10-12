@@ -12,6 +12,7 @@ export default function BackupSection({ settings }: { settings: Settings }) {
   const [status, setStatus] = useState<Status>(null)
   const [pending, setPending] = useState<Backup | null>(null)
   const [busy, setBusy] = useState(false)
+  const [includePhotos, setIncludePhotos] = useState(false)
 
   const run = async (fn: () => Promise<void>) => {
     setBusy(true)
@@ -30,7 +31,7 @@ export default function BackupSection({ settings }: { settings: Settings }) {
   // The time is also stamped inside the file so a restored copy doesn't nag straight away.
   const backUp = async (send: (name: string, text: string) => Promise<void>) => {
     const now = new Date().toISOString()
-    const backup = await exportAll()
+    const backup = await exportAll({ includePhotos })
     for (const row of backup.tables.settings ?? []) row.lastBackupAt = now
     await send(backupFileName(), JSON.stringify(backup, null, 1))
     await saveSettings({ lastBackupAt: now })
@@ -69,6 +70,10 @@ export default function BackupSection({ settings }: { settings: Settings }) {
         {settings.lastBackupAt ? `Last backup: ${formatDate(settings.lastBackupAt)}.` : 'No backup yet.'} Everything lives only on this phone, so
         keep a copy somewhere else (another device, USB stick, encrypted cloud).
       </p>
+      <label className="toggle">
+        <input type="checkbox" checked={includePhotos} onChange={(e) => setIncludePhotos(e.target.checked)} />
+        <span>Include progress photos (makes the file much bigger; keep it somewhere private)</span>
+      </label>
       <button className="btn btn-primary btn-block" onClick={exportFile} disabled={busy}>
         Save backup file
       </button>

@@ -19,7 +19,7 @@ export default function ReminderSync() {
     if (!settings?.onboarded || !notificationsSupported() || stamp === undefined) return
     syncReminders(settings).catch(() => {})
     // Only these fields matter; re-running on every settings save would re-ask permission needlessly.
-  }, [settings?.supplementReminder, settings?.injectionReminder, settings?.bloodsIntervalWeeks, settings?.onboarded, settings?.showCycleLog, stamp])
+  }, [settings?.supplementReminder, settings?.injectionReminder, settings?.bloodsIntervalWeeks, settings?.onboarded, settings?.showCycleLog, settings?.checkInReminder, settings?.checkInDay, stamp])
 
   return null
 }

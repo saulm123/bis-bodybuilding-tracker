@@ -54,6 +54,12 @@ export interface Settings {
   supplementReminder?: string
   injectionReminder?: string
   supplementsSeeded?: boolean
+  /** Weekly check-in day, 1 = Monday … 7 = Sunday */
+  checkInDay?: number
+  /** 'HH:MM' weekly check-in reminder (Android app only); undefined = off */
+  checkInReminder?: string
+  /** Blur progress photos until tapped (privacy at the gym). Default on. */
+  blurPhotos?: boolean
   createdAt: string
   updatedAt: string
 }
@@ -228,6 +234,25 @@ export interface SupplementLog extends BaseRecord {
   supplementId: string
 }
 
+// ---- Weekly check-in ----
+
+export type Pose = 'front' | 'side' | 'back'
+
+export interface CheckIn extends BaseRecord {
+  date: string
+  weightKg?: number
+  notes?: string
+}
+
+/** A progress photo. Stored as an image file inside the app's own storage only. */
+export interface Photo extends BaseRecord {
+  checkInId: string
+  pose: Pose
+  blob: Blob
+  width: number
+  height: number
+}
+
 export class BisDb extends Dexie {
   settings!: EntityTable<Settings, 'id'>
   weights!: EntityTable<WeightEntry, 'id'>
@@ -244,6 +269,8 @@ export class BisDb extends Dexie {
   bloodPanels!: EntityTable<BloodPanel, 'id'>
   supplements!: EntityTable<Supplement, 'id'>
   supplementLog!: EntityTable<SupplementLog, 'id'>
+  checkIns!: EntityTable<CheckIn, 'id'>
+  photos!: EntityTable<Photo, 'id'>
 
   constructor(name = 'bis-tracker') {
     super(name)
@@ -279,6 +306,11 @@ export class BisDb extends Dexie {
     // v5: exercise history follows the exercise name across plans
     this.version(5).stores({
       sets: 'id, sessionId, exerciseId, date, [exerciseId+date], exerciseName',
+    })
+    // v6: weekly check-ins with progress photos
+    this.version(6).stores({
+      checkIns: 'id, date',
+      photos: 'id, checkInId',
     })
   }
 }

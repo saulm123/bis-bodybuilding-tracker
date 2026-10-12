@@ -18,6 +18,8 @@ All data stays on your phone. No accounts, no analytics, no Google services.
   weeks when you're gaining too fast or too slowly (or losing outside 0.5–1%/week on a cut).
 - **Motivation**: personal records with live trophies, a workout-complete summary with a shareable card,
   muscles trained this week, badges and streaks. Calorie/protein rings, dark or light theme.
+- **Weekly check-in**: weight plus front/side/back progress photos (kept inside the app only, blurred until
+  tapped) with a side-by-side compare view and a weekly reminder.
 - **Exercise demos**: tap any exercise for an animated demo, form tips and muscles worked (works offline).
 - **Training**: editable plans, set logging with big buttons, last session's numbers, an automatic
   "add weight" bump when you hit the top of the rep range on every set, rest timer with notifications,

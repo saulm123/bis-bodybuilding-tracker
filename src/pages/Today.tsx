@@ -14,6 +14,7 @@ import { useTrend } from '../weight/useTrend'
 import { PHASE_STATUS } from '../lib/macros'
 import { unitHelpers } from '../lib/units'
 import { activityStreak } from '../training/useStats'
+import { checkInDue } from '../checkin/store'
 
 export default function Today() {
   const settings = useSettings()
@@ -29,6 +30,7 @@ export default function Today() {
   )
   const weighedToday = useLiveQuery(() => db.weights.where('date').equals(today).count(), [today])
   const streak = useLiveQuery(() => activityStreak(), [])
+  const lastCheckIn = useLiveQuery(() => db.checkIns.orderBy('date').last().then((c) => c ?? null), [])
   if (!settings || !entries || !program || !trend) return null
 
   const day = program.days.find((d) => d.weekday === weekdayOf(today))
@@ -49,6 +51,16 @@ export default function Today() {
       </div>
 
       <CalorieSuggestion settings={settings} trend={trend} />
+
+      {lastCheckIn !== undefined && checkInDue(lastCheckIn?.date, today, settings.checkInDay ?? 1) && (
+        <Link to="/checkins/new" className="card card-tile checkin-due">
+          <div>
+            <span className="eyebrow">Weekly check-in</span>
+            <strong>Photos + weight</strong>
+          </div>
+          <span className="btn btn-small btn-primary">📸 Start</span>
+        </Link>
+      )}
 
       <Link to="/food" className="card plain-link">
         <MacroRings eaten={sum(entries.map(entryTotals))} target={targetTotals(settings.targets[settings.phase])} />

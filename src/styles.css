@@ -355,3 +355,19 @@ h1 { font-family: var(--display); font-weight: 400; letter-spacing: -0.3px; }
 @keyframes fall { to { transform: translateY(105vh) rotate(720deg); opacity: 0.9; } }
 @media (prefers-reduced-motion: reduce) { .confetti, .trophy, .badge-unlock { animation: none; display: none; } .trophy { display: block; } .ring-arc { transition: none; } }
 .right { align-items: flex-end; }
+
+/* ---- Check-ins & progress photos ---- */
+.photo { position: relative; display: flex; align-items: center; justify-content: center; aspect-ratio: 3 / 4; border-radius: 12px; overflow: hidden; background: var(--surface-2); border: 1px solid var(--border); padding: 0; color: var(--text-muted); font: inherit; width: 100%; }
+.photo img { width: 100%; height: 100%; object-fit: cover; display: block; transition: filter 0.2s; }
+.photo img.blurred { filter: blur(18px) brightness(0.7); transform: scale(1.1); }
+.photo-hint { position: absolute; font-size: 13px; font-weight: 700; color: #fff; background: rgba(0, 0, 0, 0.45); padding: 4px 10px; border-radius: 10px; }
+.photo-empty { font-size: 13px; }
+.photo-row { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+.pose-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+.pose-slot { display: flex; flex-direction: column; gap: 6px; }
+.pose-slot .btn { padding: 0 6px; font-size: 13px; min-height: 40px; }
+.compare { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.compare figure { margin: 0; display: flex; flex-direction: column; gap: 6px; }
+.compare figcaption { font-size: 13px; color: var(--text-muted); text-align: center; }
+.big-number { font-family: var(--display); font-weight: 400; font-size: 26px; }
+.checkin-due { border-color: var(--accent); }

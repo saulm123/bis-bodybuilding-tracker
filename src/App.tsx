@@ -28,6 +28,9 @@ import TabIcon from './components/TabIcon'
 import ErrorBoundary from './components/ErrorBoundary'
 import WorkoutSummary from './pages/train/WorkoutSummary'
 import BadgesPage from './pages/BadgesPage'
+import CheckInsPage from './pages/checkin/CheckInsPage'
+import CheckInEditor from './pages/checkin/CheckInEditor'
+import ComparePage from './pages/checkin/ComparePage'
 
 // The cycle log only exists in the FOSS build. Vite replaces VITE_FLAVOR at build
 // time, so in the Play build this whole import disappears from the app.
@@ -64,6 +67,10 @@ export default function App() {
           <Route path="/train/plans" element={<PlanPicker />} />
           <Route path="/train/summary/:id" element={<WorkoutSummary />} />
           <Route path="/badges" element={<BadgesPage />} />
+          <Route path="/checkins" element={<CheckInsPage />} />
+          <Route path="/checkins/new" element={<CheckInEditor />} />
+          <Route path="/checkins/compare" element={<ComparePage />} />
+          <Route path="/checkins/:checkInId" element={<CheckInEditor />} />
           <Route path="/train/program/:dayId" element={<DayEditor />} />
           <Route path="/train/exercise/:exerciseId" element={<ExerciseHistory />} />
           <Route path="/train/cardio" element={<CardioLog />} />
