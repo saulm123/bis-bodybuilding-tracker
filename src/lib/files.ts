@@ -54,3 +54,20 @@ export function pickTextFile(accept = 'application/json,.json'): Promise<string 
     input.click()
   })
 }
+
+/** Saves an image (data: URL) to Documents/BIS-Tracker, or downloads it in the browser. */
+export async function saveImage(name: string, dataUrl: string): Promise<string> {
+  if (Capacitor.isNativePlatform()) {
+    await Filesystem.writeFile({ path: `${FOLDER}/${name}`, data: dataUrl.split(',')[1], directory: Directory.Documents, recursive: true })
+    return `Documents/${FOLDER}/${name}`
+  }
+  const a = Object.assign(document.createElement('a'), { href: dataUrl, download: name })
+  a.click()
+  return `your Downloads folder (${name})`
+}
+
+/** Opens the share sheet with an image (Android app only). */
+export async function shareImage(name: string, dataUrl: string): Promise<void> {
+  const { uri } = await Filesystem.writeFile({ path: name, data: dataUrl.split(',')[1], directory: Directory.Cache })
+  await Share.share({ title: name, files: [uri] })
+}

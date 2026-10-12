@@ -2,7 +2,7 @@ import { useLiveQuery } from 'dexie-react-hooks'
 import { Link, useNavigate } from 'react-router-dom'
 import { db } from '../db/schema'
 import { useSettings } from '../db/settings'
-import MacroBars from '../components/MacroBars'
+import MacroRings from '../components/MacroRings'
 import BackupBanner from '../components/BackupBanner'
 import SupplementsCard from '../components/SupplementsCard'
 import CalorieSuggestion from '../components/CalorieSuggestion'
@@ -13,6 +13,7 @@ import { startSession, useProgram } from '../training/store'
 import { useTrend } from '../weight/useTrend'
 import { PHASE_STATUS } from '../lib/macros'
 import { unitHelpers } from '../lib/units'
+import { activityStreak } from '../training/useStats'
 
 export default function Today() {
   const settings = useSettings()
@@ -27,6 +28,7 @@ export default function Today() {
     [today],
   )
   const weighedToday = useLiveQuery(() => db.weights.where('date').equals(today).count(), [today])
+  const streak = useLiveQuery(() => activityStreak(), [])
   if (!settings || !entries || !program || !trend) return null
 
   const day = program.days.find((d) => d.weekday === weekdayOf(today))
@@ -36,14 +38,20 @@ export default function Today() {
     <section className="stack">
       <BackupBanner settings={settings} />
       <div className="row-between">
-        <h1>Today</h1>
-        <Link to="/more" className={`pill pill-${settings.phase}`}>{PHASE_STATUS[settings.phase]}</Link>
+        <div>
+          <span className="muted small">{new Date().toLocaleDateString(undefined, { weekday: 'long', day: 'numeric', month: 'long' })}</span>
+          <h1>Today</h1>
+        </div>
+        <div className="stack-tight right">
+          {!!streak && streak > 1 && <span className="pill streak">🔥 {streak}-day streak</span>}
+          <Link to="/more" className={`pill pill-${settings.phase}`}>{PHASE_STATUS[settings.phase]}</Link>
+        </div>
       </div>
 
       <CalorieSuggestion settings={settings} trend={trend} />
 
       <Link to="/food" className="card plain-link">
-        <MacroBars eaten={sum(entries.map(entryTotals))} target={targetTotals(settings.targets[settings.phase])} />
+        <MacroRings eaten={sum(entries.map(entryTotals))} target={targetTotals(settings.targets[settings.phase])} />
       </Link>
       <div className="action-grid">
         <button className="btn btn-primary" onClick={() => navigate('/food/add?scan=1')}>Scan food</button>

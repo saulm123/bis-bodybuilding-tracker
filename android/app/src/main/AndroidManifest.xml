@@ -41,4 +41,6 @@
     <!-- Barcode scanning (ZXing, on-device) -->
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-feature android:name="android.hardware.camera" android:required="false" />
+    <!-- Rest timer and set-done vibrations -->
+    <uses-permission android:name="android.permission.VIBRATE" />
 </manifest>

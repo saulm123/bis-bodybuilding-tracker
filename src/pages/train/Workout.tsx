@@ -10,6 +10,8 @@ import { startRest } from '../../training/restTimer'
 import { useWakeLock } from '../../lib/useWakeLock'
 import { tidy, useUnits } from '../../lib/units'
 import DemoSheet from '../../components/DemoSheet'
+import { isSetPR } from '../../training/records'
+import { haptic } from '../../lib/haptics'
 
 export default function Workout() {
   const { id = '' } = useParams()
@@ -35,7 +37,7 @@ export default function Workout() {
 
   const finish = async () => {
     await finishSession(session.id)
-    navigate('/train')
+    navigate(`/train/summary/${session.id}`, { replace: true })
   }
 
   return (
@@ -58,7 +60,10 @@ export default function Workout() {
       {!session.finishedAt ? (
         <button className="btn btn-primary btn-block" onClick={finish}>Finish workout</button>
       ) : (
-        <p className="muted small">Finished. You can still correct numbers above.</p>
+        <>
+          <p className="muted small">Finished. You can still correct numbers above.</p>
+          <Link to={`/train/summary/${session.id}`} className="btn btn-block">View summary</Link>
+        </>
       )}
 
       {!confirmDelete ? (
@@ -81,6 +86,7 @@ function ExerciseCard({ session, template: t, sets }: { session: Session; templa
   const [showDemo, setShowDemo] = useState(false)
   const history = useLiveQuery(() => exerciseHistory(t.id, t.name), [t.id, t.name])
   const last = history ? lastPerformance(history, session.id) : undefined
+  const earlier = history?.filter((h) => h.sessionId !== session.id) ?? []
   const ordered = [...sets].sort((a, b) => a.setIndex - b.setIndex)
   const allDone = ordered.length > 0 && ordered.every((s) => s.done)
   const hasRange = t.repMax > 0
@@ -92,8 +98,12 @@ function ExerciseCard({ session, template: t, sets }: { session: Session; templa
 
   const toggle = async (s: SetEntry) => {
     await updateSet(s.id, { done: !s.done })
-    // Supersets: only rest after the last exercise in the pair (rest 0 on the first).
-    if (!s.done) startRest(t.restSec, t.name)
+    if (!s.done) {
+      if (isSetPR(s, earlier)) haptic.success()
+      else haptic.tap()
+      // Supersets: only rest after the last exercise in the pair (rest 0 on the first).
+      startRest(t.restSec, t.name)
+    }
   }
 
   return (
@@ -126,7 +136,7 @@ function ExerciseCard({ session, template: t, sets }: { session: Session; templa
       </div>
       {ordered.map((s, i) => (
         <div key={s.id} className={`set-row ${s.done ? 'set-done' : ''}`}>
-          <span className="set-num">{i + 1}</span>
+          <span className="set-num">{s.done && isSetPR(s, earlier) ? <span className="pr-flag" title="Personal record">🏆</span> : i + 1}</span>
           <MiniStepper label={`Set ${i + 1} weight`} value={tidy(u.fromKg(s.weight), 2)} step={weightStep} max={imperial ? 1100 : 500} onChange={(shown) => updateSet(s.id, { weight: u.toKg(shown) })} />
           <MiniStepper label={`Set ${i + 1} reps`} value={s.reps} step={1} max={100} decimals={0} onChange={(reps) => updateSet(s.id, { reps })} />
           <button className="check" aria-label={s.done ? `Undo set ${i + 1}` : `Done set ${i + 1}`} aria-pressed={s.done} onClick={() => toggle(s)}>

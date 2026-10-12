@@ -15,6 +15,7 @@ export function defaultSettings(): Settings {
     dietStyle: 'balanced',
     units: 'metric',
     showCycleLog: false,
+    theme: 'dark',
     phase: 'maintain',
     targets: structuredClone(DEFAULT_TARGETS),
     backupReminderDays: 7,

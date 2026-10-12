@@ -35,6 +35,7 @@ export interface Settings {
   units: Units
   /** Cycle log is opt-in (FOSS build only). */
   showCycleLog: boolean
+  theme: 'dark' | 'light' | 'system'
   phase: Phase
   targets: Record<Phase, MacroTargets>
   backupReminderDays: number

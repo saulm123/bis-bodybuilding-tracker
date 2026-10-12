@@ -16,6 +16,8 @@ All data stays on your phone. No accounts, no analytics, no Google services.
   favourites, saved meals, quick add, copy the previous day.
 - **Weight**: daily weigh-ins, 7-day average trend, weekly rate, and a ±200 kcal suggestion every two
   weeks when you're gaining too fast or too slowly (or losing outside 0.5–1%/week on a cut).
+- **Motivation**: personal records with live trophies, a workout-complete summary with a shareable card,
+  muscles trained this week, badges and streaks. Calorie/protein rings, dark or light theme.
 - **Exercise demos**: tap any exercise for an animated demo, form tips and muscles worked (works offline).
 - **Training**: editable plans, set logging with big buttons, last session's numbers, an automatic
   "add weight" bump when you hit the top of the rep range on every set, rest timer with notifications,

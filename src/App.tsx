@@ -1,4 +1,4 @@
-import { lazy, Suspense } from 'react'
+import { lazy, Suspense, useEffect } from 'react'
 import { NavLink, Navigate, Route, Routes } from 'react-router-dom'
 import More from './pages/More'
 import Today from './pages/Today'
@@ -26,6 +26,8 @@ import SupplementsEditor from './pages/health/SupplementsEditor'
 import ReminderSync from './components/ReminderSync'
 import TabIcon from './components/TabIcon'
 import ErrorBoundary from './components/ErrorBoundary'
+import WorkoutSummary from './pages/train/WorkoutSummary'
+import BadgesPage from './pages/BadgesPage'
 
 // The cycle log only exists in the FOSS build. Vite replaces VITE_FLAVOR at build
 // time, so in the Play build this whole import disappears from the app.
@@ -41,6 +43,12 @@ const tabs = [
 
 export default function App() {
   const settings = useSettings()
+  const theme = settings?.theme ?? 'dark'
+  useEffect(() => {
+    document.documentElement.dataset.theme = theme
+    const light = theme === 'light' || (theme === 'system' && matchMedia('(prefers-color-scheme: light)').matches)
+    document.querySelector('meta[name="theme-color"]')?.setAttribute('content', light ? '#f4f4f2' : '#0d0d0d')
+  }, [theme])
   if (!settings) return null // first database read takes a few ms
   if (!settings.onboarded) return <Onboarding />
 
@@ -54,6 +62,8 @@ export default function App() {
           <Route path="/train/session/:id" element={<Workout />} />
           <Route path="/train/program" element={<ProgramEditor />} />
           <Route path="/train/plans" element={<PlanPicker />} />
+          <Route path="/train/summary/:id" element={<WorkoutSummary />} />
+          <Route path="/badges" element={<BadgesPage />} />
           <Route path="/train/program/:dayId" element={<DayEditor />} />
           <Route path="/train/exercise/:exerciseId" element={<ExerciseHistory />} />
           <Route path="/train/cardio" element={<CardioLog />} />

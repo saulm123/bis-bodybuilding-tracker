@@ -3,6 +3,7 @@ import { createRoot } from 'react-dom/client'
 import { HashRouter } from 'react-router-dom'
 import { Capacitor } from '@capacitor/core'
 import App from './App'
+import '@fontsource/archivo-black/400.css' // bundled locally, no font CDN
 import './styles.css'
 
 // The service worker is only needed for the installable web version.

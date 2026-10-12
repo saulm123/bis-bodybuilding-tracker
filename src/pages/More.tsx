@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom'
 import { useState } from 'react'
 import { useSettings, saveSettings } from '../db/settings'
 import Segmented from '../components/Segmented'
@@ -46,6 +47,17 @@ export default function More() {
       </div>
 
       <DetailsSection settings={settings} />
+
+      <div className="card stack">
+        <h2>Appearance</h2>
+        <Segmented
+          label="Theme"
+          value={settings.theme}
+          onChange={(theme) => saveSettings({ theme })}
+          options={[{ value: 'dark', label: 'Dark' }, { value: 'light', label: 'Light' }, { value: 'system', label: 'Phone' }]}
+        />
+        <Link to="/badges" className="btn btn-block">🏅 Badges</Link>
+      </div>
 
       {import.meta.env.VITE_FLAVOR !== 'play' && (
         <div className="card stack">

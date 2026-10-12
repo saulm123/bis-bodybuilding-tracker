@@ -5,6 +5,8 @@ import { useSettings } from '../../db/settings'
 import { isoDate, formatDate } from '../../lib/dates'
 import { deloadStatus, WEEKDAYS, weekdayOf } from '../../training/logic'
 import { startDeloadWeek, startSession, useProgram } from '../../training/store'
+import { musclesWorked } from '../../training/records'
+import MuscleChips from '../../components/MuscleChips'
 
 export default function TrainHome() {
   const program = useProgram()
@@ -14,6 +16,17 @@ export default function TrainHome() {
   const open = useLiveQuery(() => db.sessions.filter((s) => !s.finishedAt).first(), [])
   const recent = useLiveQuery(() => db.sessions.orderBy('date').reverse().filter((s) => !!s.finishedAt).limit(8).toArray(), [])
   const recentCardio = useLiveQuery(() => db.cardio.orderBy('date').reverse().limit(3).toArray(), [])
+  // This week = Monday to today
+  const monday = (() => {
+    const d = new Date()
+    d.setDate(d.getDate() - ((d.getDay() + 6) % 7))
+    return isoDate(d)
+  })()
+  const week = useLiveQuery(async () => {
+    const sessions = await db.sessions.where('date').aboveOrEqual(monday).filter((s) => !!s.finishedAt).count()
+    const sets = await db.sets.where('date').aboveOrEqual(monday).toArray()
+    return { sessions, muscles: musclesWorked(sets) }
+  }, [monday])
 
   if (!program || !settings) return null
   const todayDay = program.days.find((d) => d.weekday === weekdayOf(today))
@@ -47,6 +60,17 @@ export default function TrainHome() {
           <span className="muted small">Workout in progress</span>
           <strong>Continue {open.dayName}</strong>
         </Link>
+      )}
+
+      {week && (
+        <div className="card stack">
+          <div className="row-between">
+            <h2>This week</h2>
+            <span className="small"><strong>{week.sessions}</strong><span className="muted"> / {program.days.filter((d) => d.kind === 'lift').length} workouts</span></span>
+          </div>
+          <MuscleChips counts={week.muscles} />
+          <Link to="/badges" className="muted small">🏅 Badges and records</Link>
+        </div>
       )}
 
       {todayDay && !open && (

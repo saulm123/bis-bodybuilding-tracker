@@ -3,7 +3,7 @@ import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { db, type FoodLogEntry } from '../../db/schema'
 import { useSettings } from '../../db/settings'
-import MacroBars from '../../components/MacroBars'
+import MacroRings from '../../components/MacroRings'
 import MiniStepper from '../../components/MiniStepper'
 import { entryTotals, sum, targetTotals } from '../../nutrition/macros'
 import { copyDay, deleteEntry, saveMeal, updateEntryGrams } from '../../nutrition/store'
@@ -32,7 +32,7 @@ export default function FoodDay() {
       </div>
 
       <div className="card">
-        <MacroBars eaten={eaten} target={targetTotals(settings.targets[settings.phase])} />
+        <MacroRings eaten={eaten} target={targetTotals(settings.targets[settings.phase])} />
       </div>
 
       <div className="action-grid">
