@@ -209,3 +209,33 @@ h3 { font-size: 16px; margin: 4px 0 0; color: var(--text-muted); font-weight: 60
 .macro-grid.three { grid-template-columns: repeat(3, 1fr); }
 .macro-grid small { font-size: 11px; font-weight: 400; color: var(--text-muted); }
 .suggestion { border-color: var(--accent); }
+
+/* ---- Health ---- */
+.stack-tight { display: flex; flex-direction: column; gap: 6px; }
+.chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.chip { min-height: 48px; padding: 0 16px; border-radius: 24px; border: 1px solid var(--border); background: var(--surface-2); color: var(--text); font: inherit; font-size: 16px; cursor: pointer; }
+.chip-done { background: #10302a; border-color: var(--success); color: var(--success); }
+.card-tile { display: flex; justify-content: space-between; align-items: center; gap: 12px; color: var(--text); text-decoration: none; min-height: 72px; }
+.card-tile > div { display: flex; flex-direction: column; }
+.card-tile strong { font-size: 18px; }
+.card-tile > span { text-align: right; }
+.level-normal { color: var(--success); }
+.level-elevated { color: var(--accent); }
+.level-high { color: var(--danger); }
+.status-done { color: var(--success); }
+.status-upcoming { color: var(--text-muted); }
+.status-due { color: var(--accent); }
+.status-overdue { color: var(--danger); }
+.marker-value { font-weight: 700; white-space: nowrap; }
+.marker-value small { font-weight: 400; color: var(--text-muted); }
+.flag-low, .flag-high { color: var(--danger); }
+.flag-low small, .flag-high small { color: var(--danger); }
+.marker-detail { padding-bottom: 12px; }
+.marker-input { display: grid; grid-template-columns: 1fr 100px 52px; gap: 8px; align-items: center; }
+.marker-input input { min-height: 48px; padding: 0 10px; border-radius: 12px; border: 1px solid var(--border); background: var(--bg); color: var(--text); font: inherit; font-size: 18px; text-align: right; min-width: 0; }
+.marker-input input:focus { outline: 0; border-color: var(--accent); }
+.range-row { display: grid; grid-template-columns: 1fr 72px 72px; gap: 8px; align-items: center; }
+.range-row .input { min-height: 44px; padding: 0 8px; font-size: 16px; text-align: center; }
+.input.time { width: 120px; }
+.inactive { opacity: 0.55; }
+select { appearance: none; }

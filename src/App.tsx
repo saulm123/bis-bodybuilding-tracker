@@ -1,5 +1,5 @@
+import { lazy, Suspense } from 'react'
 import { NavLink, Navigate, Route, Routes } from 'react-router-dom'
-import Placeholder from './pages/Placeholder'
 import More from './pages/More'
 import Today from './pages/Today'
 import Onboarding from './pages/Onboarding'
@@ -17,6 +17,16 @@ import QuickAdd from './pages/food/QuickAdd'
 import NewFood from './pages/food/NewFood'
 import Meals from './pages/food/Meals'
 import WeightPage from './pages/WeightPage'
+import HealthHome from './pages/health/HealthHome'
+import BpPage from './pages/health/BpPage'
+import BloodsPage from './pages/health/BloodsPage'
+import PanelEditor from './pages/health/PanelEditor'
+import SupplementsEditor from './pages/health/SupplementsEditor'
+import ReminderSync from './components/ReminderSync'
+
+// The cycle log only exists in the FOSS build. Vite replaces VITE_FLAVOR at build
+// time, so in the Play build this whole import disappears from the app.
+const CyclePage = import.meta.env.VITE_FLAVOR !== 'play' ? lazy(() => import('./pages/health/CyclePage')) : null
 
 const tabs = [
   { to: '/today', label: 'Today', icon: '◎' },
@@ -48,13 +58,20 @@ export default function App() {
           <Route path="/food/quick" element={<QuickAdd />} />
           <Route path="/food/new" element={<NewFood />} />
           <Route path="/food/meals" element={<Meals />} />
-          <Route path="/health" element={<Placeholder title="Health" phase="Phase 5" />} />
+          <Route path="/health" element={<HealthHome />} />
+          <Route path="/health/bp" element={<BpPage />} />
+          <Route path="/health/bloods" element={<BloodsPage />} />
+          <Route path="/health/bloods/new" element={<PanelEditor />} />
+          <Route path="/health/bloods/:panelId" element={<PanelEditor />} />
+          <Route path="/health/supplements" element={<SupplementsEditor />} />
+          {CyclePage && <Route path="/health/cycle" element={<Suspense fallback={null}><CyclePage /></Suspense>} />}
           <Route path="/weight" element={<WeightPage />} />
           <Route path="/more" element={<More />} />
           <Route path="*" element={<Navigate to="/today" replace />} />
         </Routes>
       </main>
       <RestTimerBar />
+      <ReminderSync />
       <nav className="tabbar">
         {tabs.map((t) => (
           <NavLink key={t.to} to={t.to} className="tab">

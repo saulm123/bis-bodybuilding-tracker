@@ -32,6 +32,15 @@ export interface Settings {
   deloadUntil?: string
   /** When calories were last adjusted (or a suggestion dismissed); suggestions wait 2 weeks after. */
   lastCalorieReviewAt?: string
+  /** Health: your own reference ranges per blood marker (override the defaults). */
+  markerRanges?: Record<string, { low?: number; high?: number }>
+  /** Weeks between blood tests when no cycle dates are set. */
+  bloodsIntervalWeeks?: number
+  bpAlert?: { systolic: number; diastolic: number }
+  /** 'HH:MM' daily reminders (Android app only); undefined = off. */
+  supplementReminder?: string
+  injectionReminder?: string
+  supplementsSeeded?: boolean
   createdAt: string
   updatedAt: string
 }
@@ -150,9 +159,59 @@ export interface Meal extends BaseRecord {
   items: MealItem[]
 }
 
-// Tables for later phases are declared now so the first install already has
-// them. Their record types get filled in as each phase is built.
-type Later = BaseRecord & Record<string, unknown>
+// ---- Health ----
+
+export interface Compound {
+  id: string
+  name: string
+  doseMg: number
+  /** Injection weekdays, 1 = Monday … 7 = Sunday */
+  days: number[]
+}
+
+export interface Cycle extends BaseRecord {
+  name: string
+  startDate: string
+  endDate?: string
+  compounds: Compound[]
+  notes?: string
+}
+
+export interface Injection extends BaseRecord {
+  date: string
+  cycleId: string
+  compoundId: string
+  compoundName: string
+  doseMg: number
+  site: string
+}
+
+export interface BpReading extends BaseRecord {
+  date: string
+  time: string
+  systolic: number
+  diastolic: number
+  pulse?: number
+}
+
+export interface BloodPanel extends BaseRecord {
+  date: string
+  label: string
+  values: Record<string, number>
+  notes?: string
+}
+
+export interface Supplement extends BaseRecord {
+  name: string
+  timing: 'AM' | 'PM'
+  order: number
+  active: boolean
+}
+
+export interface SupplementLog extends BaseRecord {
+  date: string
+  supplementId: string
+}
 
 export class BisDb extends Dexie {
   settings!: EntityTable<Settings, 'id'>
@@ -164,12 +223,12 @@ export class BisDb extends Dexie {
   sessions!: EntityTable<Session, 'id'>
   sets!: EntityTable<SetEntry, 'id'>
   cardio!: EntityTable<CardioEntry, 'id'>
-  cycles!: EntityTable<Later, 'id'>
-  injections!: EntityTable<Later, 'id'>
-  bp!: EntityTable<Later, 'id'>
-  bloodPanels!: EntityTable<Later, 'id'>
-  supplements!: EntityTable<Later, 'id'>
-  supplementLog!: EntityTable<Later, 'id'>
+  cycles!: EntityTable<Cycle, 'id'>
+  injections!: EntityTable<Injection, 'id'>
+  bp!: EntityTable<BpReading, 'id'>
+  bloodPanels!: EntityTable<BloodPanel, 'id'>
+  supplements!: EntityTable<Supplement, 'id'>
+  supplementLog!: EntityTable<SupplementLog, 'id'>
 
   constructor(name = 'bis-tracker') {
     super(name)
@@ -197,6 +256,10 @@ export class BisDb extends Dexie {
     // v3: recently used foods
     this.version(3).stores({
       foods: 'id, barcode, name, updatedAt, lastUsedAt',
+    })
+    // v4: notice cycle edits
+    this.version(4).stores({
+      cycles: 'id, startDate, updatedAt',
     })
   }
 }

@@ -4,6 +4,8 @@ import Segmented from '../components/Segmented'
 import Stepper from '../components/Stepper'
 import TargetsEditor from '../components/TargetsEditor'
 import BackupSection from '../components/BackupSection'
+import RemindersSection from '../components/RemindersSection'
+import RangesSection from '../components/RangesSection'
 import type { Phase } from '../db/schema'
 import { APP_VERSION, FLAVOR } from '../flavor'
 
@@ -51,6 +53,10 @@ export default function More() {
         <h2>Body</h2>
         <Stepper label="Height" value={settings.heightCm} min={120} max={230} suffix="cm" onChange={(heightCm) => saveSettings({ heightCm })} />
       </div>
+
+      <RemindersSection settings={settings} />
+
+      <RangesSection settings={settings} />
 
       <BackupSection settings={settings} />
 
