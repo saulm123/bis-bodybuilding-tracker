@@ -1,0 +1,1 @@
+Exercise videos everywhere: new Exercise videos library (Train), and a video button on every exercise in the plan editor, plan picker, Train screen and exercise history.

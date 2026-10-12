@@ -5,6 +5,7 @@ import { formatDate } from '../../lib/dates'
 import { e1rm, formatSets } from '../../training/logic'
 import { exerciseHistory, useProgram } from '../../training/store'
 import { useUnits } from '../../lib/units'
+import DemoButton from '../../components/DemoButton'
 
 export default function ExerciseHistory() {
   const { exerciseId = '' } = useParams()
@@ -31,6 +32,7 @@ export default function ExerciseHistory() {
         <h1>{name}</h1>
         <button className="btn btn-small" onClick={() => history.back()}>Back</button>
       </div>
+      <DemoButton exercise={{ id: exerciseId, name }} label="Watch how to do it" />
       {sessions.length === 0 ? (
         <p className="muted">No completed sets yet. <Link to="/train">Go train</Link></p>
       ) : (

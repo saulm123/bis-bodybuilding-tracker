@@ -7,6 +7,7 @@ import Stepper from '../../components/Stepper'
 import { WEEKDAYS } from '../../training/logic'
 import { resetProgram, updateDay, useProgram } from '../../training/store'
 import { tidy, useUnits } from '../../lib/units'
+import DemoButton from '../../components/DemoButton'
 
 export function ProgramEditor() {
   const program = useProgram()
@@ -96,10 +97,13 @@ export function DayEditor() {
         <>
           {day.exercises.map((ex, i) => (
             <div key={ex.id} className="card stack">
-              <button className="row-between plain" onClick={() => setOpen(open === ex.id ? null : ex.id)} aria-expanded={open === ex.id}>
-                <strong>{i + 1}. {ex.name}</strong>
-                <span className="muted small">{ex.sets}×{ex.repMin}–{ex.repMax}</span>
-              </button>
+              <div className="row-between">
+                <button className="plain grow" onClick={() => setOpen(open === ex.id ? null : ex.id)} aria-expanded={open === ex.id}>
+                  <strong>{i + 1}. {ex.name}</strong>
+                  <span className="muted small"> · {ex.sets}×{ex.repMin}–{ex.repMax}</span>
+                </button>
+                <DemoButton exercise={ex} />
+              </div>
               {open === ex.id && (
                 <div className="stack">
                   <label className="field">

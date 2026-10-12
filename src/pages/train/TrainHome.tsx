@@ -7,6 +7,7 @@ import { deloadStatus, WEEKDAYS, weekdayOf } from '../../training/logic'
 import { startDeloadWeek, startSession, useProgram } from '../../training/store'
 import { musclesWorked } from '../../training/records'
 import MuscleChips from '../../components/MuscleChips'
+import DemoButton from '../../components/DemoButton'
 
 export default function TrainHome() {
   const program = useProgram()
@@ -79,7 +80,9 @@ export default function TrainHome() {
           <h2>{todayDay.name}</h2>
           {todayDay.kind === 'lift' && (
             <>
-              <p className="muted small">{todayDay.exercises.map((e) => e.name).join(' · ')}</p>
+              <div className="chips">
+                {todayDay.exercises.map((e) => <DemoButton key={e.id} exercise={e} label={e.name} />)}
+              </div>
               <button className="btn btn-primary btn-block" onClick={() => start(todayDay)}>Start workout</button>
             </>
           )}
@@ -102,6 +105,7 @@ export default function TrainHome() {
             ))}
         </div>
         <Link to="/train/cardio" className="btn btn-block">Log cardio</Link>
+        <Link to="/train/library" className="btn btn-block">▶ Exercise videos</Link>
       </div>
 
       {!!recent?.length && (

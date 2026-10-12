@@ -4,6 +4,7 @@ import { WEEKDAYS } from '../../training/logic'
 import { PLANS } from '../../training/templates'
 import { applyPlan, useProgram } from '../../training/store'
 import { useUnits } from '../../lib/units'
+import DemoButton from '../../components/DemoButton'
 
 export default function PlanPicker() {
   const program = useProgram()
@@ -35,7 +36,9 @@ export default function PlanPicker() {
               {p.days().filter((d) => d.kind === 'lift').map((d) => (
                 <li key={d.id} className="plan-day">
                   <strong>{WEEKDAYS[d.weekday - 1]} · {d.name}</strong>
-                  <span className="muted">{d.exercises.map((e) => `${e.name} ${e.sets}×${e.repMin === e.repMax ? e.repMin : `${e.repMin}–${e.repMax}`}`).join(' · ')}</span>
+                  <div className="chips">
+                    {d.exercises.map((e) => <DemoButton key={e.id} exercise={e} label={`${e.name} ${e.sets}×${e.repMin === e.repMax ? e.repMin : `${e.repMin}–${e.repMax}`}`} />)}
+                  </div>
                 </li>
               ))}
             </ul>

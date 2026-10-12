@@ -10,6 +10,7 @@ import { DayEditor, ProgramEditor } from './pages/train/ProgramEditor'
 import ExerciseHistory from './pages/train/ExerciseHistory'
 import CardioLog from './pages/train/CardioLog'
 import PlanPicker from './pages/train/PlanPicker'
+import ExerciseLibrary from './pages/train/ExerciseLibrary'
 import RestTimerBar from './components/RestTimerBar'
 import FoodDay from './pages/food/FoodDay'
 import AddFood from './pages/food/AddFood'
@@ -65,6 +66,7 @@ export default function App() {
           <Route path="/train/session/:id" element={<Workout />} />
           <Route path="/train/program" element={<ProgramEditor />} />
           <Route path="/train/plans" element={<PlanPicker />} />
+          <Route path="/train/library" element={<ExerciseLibrary />} />
           <Route path="/train/summary/:id" element={<WorkoutSummary />} />
           <Route path="/badges" element={<BadgesPage />} />
           <Route path="/checkins" element={<CheckInsPage />} />
