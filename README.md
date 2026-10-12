@@ -2,17 +2,32 @@
 
 # BIS Bodybuilding Tracker
 
-An offline macro, training and health tracker for Android (and an installable web app).
+An offline macro, training and health tracker for Android, also available as an installable web app.
 All data stays on your phone. No accounts, no analytics, no Google services.
 
-> Status: early development. v0.1.0 is the app shell; features arrive phase by phase.
+## Features
+
+- **Nutrition**: daily calorie/protein/net-carb/fat targets with a bulk/cut switch (fat fills the
+  remaining calories). Food search and barcode scanning via Open Food Facts (on-device ZXing scanner),
+  favourites, saved meals, quick add, copy the previous day.
+- **Weight**: daily weigh-ins, 7-day average trend, weekly rate, and a ±200 kcal suggestion every two
+  weeks when you're gaining too fast or too slowly (or losing outside 0.5–1%/week on a cut).
+- **Training**: editable 5-day split, set logging with big buttons, last session's numbers, an automatic
+  "add weight" bump when you hit the top of the rep range on every set, rest timer with notifications,
+  deload reminders at 6–8 weeks, exercise history with estimated 1RM, cardio log.
+- **Health**: blood pressure and resting HR with weekly averages; blood test tracker (haematocrit, lipids,
+  liver, kidney, hormones) with editable ranges and reminders; daily supplement checklist; cycle log
+  (GitHub/F-Droid build only).
+- **Privacy**: everything stored locally (IndexedDB), JSON backup/restore, dark mode, big tap targets.
 
 ## Install
 
-- **Obtainium** (recommended): add this repo's URL. Obtainium installs the APK from
-  [Releases](../../releases) and keeps it updated.
+- **Obtainium** (recommended): add `https://github.com/saulm123/bis-bodybuilding-tracker`. Obtainium
+  installs the APK from [Releases](../../releases) and keeps it updated.
 - **Direct**: download the `.apk` from the latest [release](../../releases).
-- IzzyOnDroid and F-Droid listings are planned.
+- **Web app**: open https://saulm123.github.io/bis-bodybuilding-tracker/ in Vanadium/Chrome →
+  ⋮ → *Add to Home screen*. (Online food search and notifications need the Android app.)
+- IzzyOnDroid and F-Droid: coming (see [docs/FDROID.md](docs/FDROID.md)).
 
 Signing certificate SHA-256 fingerprint (check this in Obtainium / AppVerifier):
 
@@ -22,25 +37,38 @@ C9:E4:91:1E:0B:50:65:E8:05:AF:F8:2C:53:97:37:6F:83:A4:6C:2A:33:CB:A3:16:2B:2C:B4
 
 ## Develop
 
-Needs Node (see `.nvmrc`) and, for Android builds, Java 21.
+Needs Node (exact version in `.nvmrc`) and, for Android builds, Java 21.
 
 ```bash
 npm install
 npm run dev          # web version at http://localhost:5173
-npm run build:foss   # production web build into dist/
+npm test             # unit tests
+npm run build:foss   # production web build into dist/ (build:play = no cycle log)
 npx cap sync android # copy the build into the Android project
-npm run icons        # regenerate all icons from scripts/make-icons.mjs
+npm run icons        # regenerate icons, splash and store graphics
 ```
 
-GitHub Actions builds the Android APK, so you don't need Android Studio. See
-[docs/SIGNING.md](docs/SIGNING.md) for the release key and
-[docs/RELEASING.md](docs/RELEASING.md) for how to publish a version.
+GitHub Actions builds everything, so you don't need Android Studio:
+
+| Workflow | When | What |
+| --- | --- | --- |
+| CI | every push | tests, web build, debug APK |
+| Release | `v*` tag | signed APK on GitHub Releases |
+| Reproducible build check | every push | builds twice, checks they match (for F-Droid) |
+| Web app | every push | publishes the PWA + privacy policy to GitHub Pages |
+| Google Play bundle | manual | signed `.aab` without the cycle log |
+
+Guides: [signing keys](docs/SIGNING.md) · [releasing](docs/RELEASING.md) ·
+[F-Droid & IzzyOnDroid](docs/FDROID.md) · [Google Play](docs/PLAY.md)
 
 ## Privacy
 
 The only network requests are food lookups to [Open Food Facts](https://world.openfoodfacts.org).
-Everything else stays on the device. Back up your data with Settings → Export.
+Everything else stays on the device. Read the [privacy policy](https://saulm123.github.io/bis-bodybuilding-tracker/privacy.html).
+
+This app is a logbook, not medical advice.
 
 ## Licence
 
-[MIT](LICENSE). The "BIS" lettering in the icon uses Archivo Black (SIL Open Font Licence).
+[MIT](LICENSE). The "BIS" lettering in the icon uses Archivo Black (SIL Open Font Licence). Food data
+from Open Food Facts is available under the Open Database Licence.

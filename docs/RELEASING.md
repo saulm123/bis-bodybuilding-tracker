@@ -19,5 +19,8 @@ git push origin main --tags
 5. The **Release** workflow builds and signs the APK and attaches it to a GitHub
    Release (about 5–8 minutes). Obtainium picks it up from there.
 
+IzzyOnDroid and (once accepted) F-Droid pick up new tags automatically. For
+Google Play, also run the **Google Play bundle** workflow and upload the `.aab`.
+
 If the tag and versions don't match, the workflow stops with a clear error.
 Delete the tag (`git tag -d v0.2.0`), fix the versions and tag again.

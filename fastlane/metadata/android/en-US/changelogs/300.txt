@@ -1,0 +1,1 @@
+All features in: workout logger with progression and rest timer, food logging with barcode scanning and Open Food Facts, weight trend with calorie suggestions, blood pressure, bloods, supplements and cycle log, reminders, Today dashboard.

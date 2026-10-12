@@ -9,6 +9,7 @@ if (keystorePropsFile.exists()) {
 }
 def signingValue = { String prop, String env -> keystoreProps.getProperty(prop) ?: System.getenv(env) }
 def releaseStoreFile = signingValue('storeFile', 'BIS_KEYSTORE_FILE')
+def playStoreFile = signingValue('playStoreFile', 'BIS_PLAY_KEYSTORE_FILE')
 
 android {
     namespace = "com.bis.bodybuildingtracker"
@@ -19,8 +20,8 @@ android {
         targetSdkVersion rootProject.ext.targetSdkVersion
         // Bump both for every release. versionCode = major*10000 + minor*100 + patch.
         // F-Droid reads these from this file, so they must live here, not in CI.
-        versionCode 200
-        versionName "0.2.0"
+        versionCode 300
+        versionName "0.3.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         aaptOptions {
              // Files and dirs to omit from the packaged assets dir, modified to accommodate modern web apps.
@@ -29,6 +30,7 @@ android {
         }
     }
     signingConfigs {
+        // GitHub / F-Droid / IzzyOnDroid key (see docs/SIGNING.md)
         release {
             if (releaseStoreFile) {
                 storeFile file(releaseStoreFile)
@@ -39,6 +41,16 @@ android {
                 keyPassword signingValue('keyPassword', 'BIS_KEY_PASSWORD') ?: storePass
             }
         }
+        // Google Play upload key: a separate key, only used for the Play build (docs/PLAY.md)
+        playUpload {
+            if (playStoreFile) {
+                storeFile file(playStoreFile)
+                def playPass = signingValue('playStorePassword', 'BIS_PLAY_KEYSTORE_PASSWORD')
+                storePassword playPass
+                keyAlias signingValue('playKeyAlias', 'BIS_PLAY_KEY_ALIAS')
+                keyPassword playPass
+            }
+        }
     }
 
     // foss: GitHub / F-Droid / IzzyOnDroid build with every feature.
@@ -47,10 +59,12 @@ android {
     productFlavors {
         foss {
             dimension "store"
+            if (releaseStoreFile) signingConfig signingConfigs.release
         }
         play {
             dimension "store"
             applicationIdSuffix ".play"
+            if (playStoreFile) signingConfig signingConfigs.playUpload
         }
     }
 
@@ -62,9 +76,6 @@ android {
 
     buildTypes {
         release {
-            if (releaseStoreFile) {
-                signingConfig signingConfigs.release
-            }
             vcsInfo.include false
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
@@ -91,3 +102,11 @@ dependencies {
 }
 
 apply from: 'capacitor.build.gradle'
+
+// Reproducible builds (F-Droid): ART baseline profiles aren't byte-for-byte stable
+// between machines, so leave them out. They only speed up the first launch slightly.
+tasks.whenTaskAdded { task ->
+    if (task.name.contains("ArtProfile")) {
+        task.enabled = false
+    }
+}

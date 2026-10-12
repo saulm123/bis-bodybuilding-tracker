@@ -1,0 +1,56 @@
+# Builds the unsigned FOSS APK twice, on two separate machines, and checks they're
+# byte-for-byte identical. F-Droid relies on this to publish our own signed APK.
+name: Reproducible build check
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  build:
+    strategy:
+      matrix:
+        copy: [a, b]
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          path: src-${{ matrix.copy }}
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: src-${{ matrix.copy }}/.nvmrc
+      - uses: actions/setup-java@v6
+        with:
+          distribution: temurin
+          java-version: 21
+      - name: Build unsigned release APK
+        working-directory: src-${{ matrix.copy }}
+        run: |
+          npm ci
+          npm run build:foss
+          npx cap sync android
+          cd android && ./gradlew --no-daemon assembleFossRelease
+      - run: sha256sum src-${{ matrix.copy }}/android/app/build/outputs/apk/foss/release/*.apk
+      - uses: actions/upload-artifact@v7
+        with:
+          name: apk-${{ matrix.copy }}
+          path: src-${{ matrix.copy }}/android/app/build/outputs/apk/foss/release/*.apk
+
+  compare:
+    needs: build
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/download-artifact@v8
+      - name: Compare
+        run: |
+          A=$(ls apk-a/*.apk); B=$(ls apk-b/*.apk)
+          sha256sum "$A" "$B"
+          if cmp -s "$A" "$B"; then
+            echo "Reproducible: the two builds are identical."
+          else
+            echo "::error::Builds differ. Files that changed:"
+            mkdir a b && unzip -q "$A" -d a && unzip -q "$B" -d b
+            diff -rq a b || true
+            exit 1
+          fi

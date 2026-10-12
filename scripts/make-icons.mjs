@@ -16,9 +16,9 @@ const TEXT = '#FFFFFF'
 const fontFile = 'node_modules/@fontsource/archivo-black/files/archivo-black-latin-400-normal.woff'
 const buf = readFileSync(fontFile)
 const font = opentype.parse(buf.buffer.slice(buf.byteOffset, buf.byteOffset + buf.byteLength))
-const raw = font.getPath('BIS', 0, 52, 24)
+const raw = font.getPath('BIS', 0, 52, 24, { kerning: false })
 const box = raw.getBoundingBox()
-const textPath = font.getPath('BIS', 54 - (box.x1 + box.x2) / 2, 52, 24).toPathData(2)
+const textPath = font.getPath('BIS', 54 - (box.x1 + box.x2) / 2, 52, 24, { kerning: false }).toPathData(2)
 
 // Foreground on the 108x108 adaptive-icon canvas, kept inside the 66dp safe circle.
 const foreground = (mono = false) => {
@@ -57,6 +57,35 @@ png(rounded, 180, 'public/icons/apple-touch-icon.png')
 
 // Store listing icon (F-Droid / IzzyOnDroid read this; Play uses the same 512px file)
 png(rounded, 512, 'fastlane/metadata/android/en-US/images/icon.png')
+
+// Play Store feature graphic (1024x500): logo on the left, title text on the right.
+{
+  const left = 420
+  const maxW = 1024 - left - 50
+  // Outlined text, shrunk if needed so each line fits the space.
+  // Kerning off: opentype.js produces NaN coordinates with this font's kerning data.
+  const opts = { kerning: false }
+  const line = (text, size, baseline, fill) => {
+    let p = font.getPath(text, 0, 0, size, opts)
+    let b = p.getBoundingBox()
+    if (b.x2 - b.x1 > maxW) {
+      size = (size * maxW) / (b.x2 - b.x1)
+      p = font.getPath(text, 0, 0, size, opts)
+      b = p.getBoundingBox()
+    }
+    return `<path transform="translate(${left - b.x1} ${baseline})" d="${p.toPathData(2)}" fill="${fill}"/>`
+  }
+  const graphic = svg(
+    '0 0 1024 500',
+    `<rect width="1024" height="500" fill="${BG}"/>` +
+      `<svg x="60" y="90" width="320" height="320" viewBox="18 18 72 72">${foreground()}</svg>` +
+      line('BIS Bodybuilding', 64, 220, TEXT) +
+      line('Tracker', 64, 295, TEXT) +
+      line('Macros · Training · Health', 30, 360, PLATE),
+  )
+  mkdirSync('assets/store', { recursive: true })
+  png(graphic, 1024, 'assets/store/feature-graphic.png')
+}
 
 // Android launcher icons
 const res = 'android/app/src/main/res'

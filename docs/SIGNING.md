@@ -103,5 +103,5 @@ keyPassword=...
 ## Google Play upload key (Phase 9, later)
 
 Play uses a **separate** "upload key". Google keeps the real app signing key,
-and if you lose the upload key Google can reset it. We'll make that one when we
-get to the Play build. Don't reuse this key for it.
+and if you lose the upload key Google can reset it. Don't reuse this key for it.
+Step-by-step instructions are in [PLAY.md](PLAY.md).

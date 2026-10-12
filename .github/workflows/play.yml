@@ -1,0 +1,50 @@
+# Google Play build (no cycle log). Run it by hand from the Actions tab:
+# Actions → "Google Play bundle" → Run workflow. Download the .aab from the run
+# page and upload it in Play Console. See docs/PLAY.md.
+name: Google Play bundle
+
+on:
+  workflow_dispatch:
+
+jobs:
+  bundle:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - uses: actions/setup-java@v6
+        with:
+          distribution: temurin
+          java-version: 21
+      - run: npm ci
+      - run: npm test
+      - run: npm run build:play
+      - name: Check the cycle log is not in the Play build
+        run: |
+          if grep -rq "Start a new cycle" dist/; then
+            echo "::error::Cycle log code found in the Play build"; exit 1
+          fi
+      - run: npx cap sync android
+      - name: Restore Play upload key
+        env:
+          PLAY_KEYSTORE_BASE64: ${{ secrets.PLAY_KEYSTORE_BASE64 }}
+        run: |
+          if [ -z "$PLAY_KEYSTORE_BASE64" ]; then
+            echo "::error::PLAY_KEYSTORE_BASE64 secret is missing. See docs/PLAY.md"; exit 1
+          fi
+          echo "$PLAY_KEYSTORE_BASE64" | base64 -d > "$RUNNER_TEMP/play-upload.jks"
+      - name: Build signed app bundle
+        working-directory: android
+        env:
+          BIS_PLAY_KEYSTORE_FILE: ${{ runner.temp }}/play-upload.jks
+          BIS_PLAY_KEYSTORE_PASSWORD: ${{ secrets.PLAY_KEYSTORE_PASSWORD }}
+          BIS_PLAY_KEY_ALIAS: ${{ secrets.PLAY_KEY_ALIAS }}
+        run: ./gradlew --no-daemon bundlePlayRelease
+      - run: rm -f "$RUNNER_TEMP/play-upload.jks"
+      - uses: actions/upload-artifact@v7
+        with:
+          name: bis-tracker-play-aab
+          path: android/app/build/outputs/bundle/playRelease/*.aab

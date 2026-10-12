@@ -1,0 +1,46 @@
+# Template for the F-Droid merge request (gitlab.com/fdroid/fdroiddata).
+# Copy to metadata/com.bis.bodybuildingtracker.yml in your fdroiddata fork and
+# update versionName / versionCode / commit to the latest release. See docs/FDROID.md.
+Categories:
+  - Sports & Health
+License: MIT
+AuthorName: saulm123
+SourceCode: https://github.com/saulm123/bis-bodybuilding-tracker
+IssueTracker: https://github.com/saulm123/bis-bodybuilding-tracker/issues
+Changelog: https://github.com/saulm123/bis-bodybuilding-tracker/releases
+
+AutoName: BIS Tracker
+
+RepoType: git
+Repo: https://github.com/saulm123/bis-bodybuilding-tracker.git
+# Reproducible build: F-Droid builds from source, checks it matches this APK,
+# then publishes our signed APK (same signature as GitHub/Obtainium).
+Binaries: https://github.com/saulm123/bis-bodybuilding-tracker/releases/download/v%v/bis-tracker-v%v.apk
+
+Builds:
+  - versionName: 0.3.0
+    versionCode: 300
+    commit: v0.3.0
+    subdir: android/app
+    sudo:
+      - apt-get update
+      - apt-get install -y xz-utils
+      - curl -Lo /tmp/node.tar.xz https://nodejs.org/dist/v26.11.1/node-v26.11.1-linux-x64.tar.xz
+      - echo "3883bfc73f9a680ca4eab04b196068aaaab1373ffa77d8fc1a4408222495b651  /tmp/node.tar.xz" | sha256sum -c -
+      - tar xJf /tmp/node.tar.xz -C /usr/local --strip-components=1
+    gradle:
+      - foss
+    prebuild:
+      - cd ../..
+      - npm ci
+      - npm run build:foss
+      - npx cap sync android
+    scandelete:
+      - node_modules
+
+AllowedAPKSigningKeys: c9e4911e0b5065e805aff82c5397376f83a46c2a33cba3162b2cb46a1f756a9f
+
+AutoUpdateMode: Version
+UpdateCheckMode: Tags ^v[0-9.]+$
+CurrentVersion: 0.3.0
+CurrentVersionCode: 300
