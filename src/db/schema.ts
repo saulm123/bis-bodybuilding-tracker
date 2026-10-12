@@ -30,6 +30,8 @@ export interface Settings {
   /** Training: weeks are counted from the last deload (or the first workout). */
   lastDeloadDate?: string
   deloadUntil?: string
+  /** When calories were last adjusted (or a suggestion dismissed); suggestions wait 2 weeks after. */
+  lastCalorieReviewAt?: string
   createdAt: string
   updatedAt: string
 }

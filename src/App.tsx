@@ -16,6 +16,7 @@ import FoodItem from './pages/food/FoodItem'
 import QuickAdd from './pages/food/QuickAdd'
 import NewFood from './pages/food/NewFood'
 import Meals from './pages/food/Meals'
+import WeightPage from './pages/WeightPage'
 
 const tabs = [
   { to: '/today', label: 'Today', icon: '◎' },
@@ -48,6 +49,7 @@ export default function App() {
           <Route path="/food/new" element={<NewFood />} />
           <Route path="/food/meals" element={<Meals />} />
           <Route path="/health" element={<Placeholder title="Health" phase="Phase 5" />} />
+          <Route path="/weight" element={<WeightPage />} />
           <Route path="/more" element={<More />} />
           <Route path="*" element={<Navigate to="/today" replace />} />
         </Routes>
