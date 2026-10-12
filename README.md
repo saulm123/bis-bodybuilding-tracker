@@ -20,7 +20,7 @@ All data stays on your phone. No accounts, no analytics, no Google services.
   muscles trained this week, badges and streaks. Calorie/protein rings, dark or light theme.
 - **Weekly check-in**: weight plus front/side/back progress photos (kept inside the app only, blurred until
   tapped) with a side-by-side compare view and a weekly reminder.
-- **Exercise demos**: tap any exercise for an animated demo, form tips and muscles worked (works offline).
+- **Exercise videos**: tap any exercise for a looping video of a full rep (47 of 48 exercises), form tips and muscles worked. Works offline.
 - **Training**: editable plans, set logging with big buttons, last session's numbers, an automatic
   "add weight" bump when you hit the top of the rep range on every set, rest timer with notifications,
   deload reminders at 6–8 weeks, exercise history with estimated 1RM, cardio log.

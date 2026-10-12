@@ -1,7 +1,7 @@
 {
   "name": "bis-bodybuilding-tracker",
   "private": true,
-  "version": "0.7.0",
+  "version": "0.8.0",
   "type": "module",
   "license": "MIT",
   "scripts": {
@@ -13,7 +13,8 @@
     "test": "vitest run --passWithNoTests",
     "icons": "node scripts/make-icons.mjs",
     "android:sync": "cap sync android",
-    "qr": "node scripts/make-qr.mjs"
+    "qr": "node scripts/make-qr.mjs",
+    "demos": "node scripts/sync-demo-clips.mjs"
   },
   "dependencies": {
     "@capacitor/android": "^8.5.3",
