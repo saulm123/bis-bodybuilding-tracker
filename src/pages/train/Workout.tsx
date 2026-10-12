@@ -9,6 +9,7 @@ import { addSet, deleteSession, exerciseHistory, finishSession, removeSet, updat
 import { startRest } from '../../training/restTimer'
 import { useWakeLock } from '../../lib/useWakeLock'
 import { tidy, useUnits } from '../../lib/units'
+import DemoSheet from '../../components/DemoSheet'
 
 export default function Workout() {
   const { id = '' } = useParams()
@@ -77,6 +78,7 @@ export default function Workout() {
 
 function ExerciseCard({ session, template: t, sets }: { session: Session; template: ExerciseTemplate; sets: SetEntry[] }) {
   const u = useUnits()
+  const [showDemo, setShowDemo] = useState(false)
   const history = useLiveQuery(() => exerciseHistory(t.id, t.name), [t.id, t.name])
   const last = history ? lastPerformance(history, session.id) : undefined
   const ordered = [...sets].sort((a, b) => a.setIndex - b.setIndex)
@@ -96,9 +98,12 @@ function ExerciseCard({ session, template: t, sets }: { session: Session; templa
 
   return (
     <div className={`card stack ex-card ${allDone ? 'ex-done' : ''}`}>
+      {showDemo && <DemoSheet exercise={t} onClose={() => setShowDemo(false)} />}
       <div className="row-between">
         <div>
-          <Link to={`/train/exercise/${t.id}`} className="ex-name">{t.name}</Link>
+          <button className="ex-name plain" onClick={() => setShowDemo(true)}>
+            {t.name} <span className="demo-hint" aria-hidden="true">ⓘ</span>
+          </button>
           {hasRange && (
             <div className="muted small">
               {t.sets} × {t.repMin === t.repMax ? t.repMin : `${t.repMin}–${t.repMax}`}

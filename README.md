@@ -16,6 +16,7 @@ All data stays on your phone. No accounts, no analytics, no Google services.
   favourites, saved meals, quick add, copy the previous day.
 - **Weight**: daily weigh-ins, 7-day average trend, weekly rate, and a ±200 kcal suggestion every two
   weeks when you're gaining too fast or too slowly (or losing outside 0.5–1%/week on a cut).
+- **Exercise demos**: tap any exercise for an animated demo, form tips and muscles worked (works offline).
 - **Training**: editable plans, set logging with big buttons, last session's numbers, an automatic
   "add weight" bump when you hit the top of the rep range on every set, rest timer with notifications,
   deload reminders at 6–8 weeks, exercise history with estimated 1RM, cardio log.
@@ -75,4 +76,6 @@ This app is a logbook, not medical advice.
 ## Licence
 
 [MIT](LICENSE). The "BIS" lettering in the icon uses Archivo Black (SIL Open Font Licence). Food data
-from Open Food Facts is available under the Open Database Licence.
+from Open Food Facts is available under the Open Database Licence. Exercise photos are from
+[free-exercise-db](https://github.com/yuhonas/free-exercise-db) (public domain); demo clips were generated for this
+app with Higgsfield.
