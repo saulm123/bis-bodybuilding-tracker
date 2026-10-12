@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Download · BIS Bodybuilding Tracker</title>
+  <meta name="theme-color" content="#0d0d0d">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <style>
+    :root { color-scheme: dark; }
+    body { background: #0d0d0d; color: #f2f2f2; font: 17px/1.55 system-ui, -apple-system, Roboto, sans-serif; margin: 0; padding: 28px 16px 48px; }
+    main { max-width: 520px; margin: 0 auto; display: flex; flex-direction: column; gap: 16px; }
+    h1 { font-size: 26px; line-height: 1.2; margin: 8px 0 0; }
+    .muted { color: #9a9a9a; }
+    .btn { display: block; text-align: center; padding: 16px; border-radius: 14px; font-weight: 800; text-decoration: none; }
+    .primary { background: #ef9f27; color: #111; }
+    .secondary { border: 1px solid #333; color: #f2f2f2; }
+    .card { background: #181818; border: 1px solid #2e2e2e; border-radius: 16px; padding: 16px; }
+    ol { margin: 0; padding-left: 22px; }
+    li { margin: 6px 0; }
+    a { color: #ef9f27; }
+  </style>
+</head>
+<body>
+<main>
+  <img src="favicon.svg" alt="" width="72" height="72" style="border-radius: 16px">
+  <h1>BIS Bodybuilding Tracker</h1>
+  <p class="muted">Free macro, training and health tracker. No account, no ads, everything stays on your phone.</p>
+
+  <a id="apk" class="btn primary" href="https://github.com/saulm123/bis-bodybuilding-tracker/releases/latest">Download for Android</a>
+  <p id="version" class="muted" style="margin: -8px 0 0; text-align: center; font-size: 14px"></p>
+
+  <div class="card">
+    <strong>Installing on Android</strong>
+    <ol>
+      <li>Tap <b>Download for Android</b> and open the file when it's done.</li>
+      <li>If asked, allow your browser to <b>install unknown apps</b>.</li>
+      <li>If Google Play Protect warns about an unknown app, tap <b>More details → Install anyway</b>. That's because it isn't from the Play Store.</li>
+    </ol>
+    <p class="muted" style="font-size: 14px">Want automatic updates? Install <a href="https://github.com/ImranR98/Obtainium/releases/latest">Obtainium</a> and add <code>github.com/saulm123/bis-bodybuilding-tracker</code>.</p>
+  </div>
+
+  <a class="btn secondary" href="./">Use the web version instead (iPhone too)</a>
+  <p class="muted" style="font-size: 14px">iPhone: open the web version in Safari → Share → <b>Add to Home Screen</b>.</p>
+  <p class="muted" style="font-size: 13px"><a href="https://github.com/saulm123/bis-bodybuilding-tracker">Source code</a> · <a href="privacy.html">Privacy policy</a></p>
+</main>
+<script>
+  // Point the button straight at the newest APK (falls back to the releases page).
+  fetch('https://api.github.com/repos/saulm123/bis-bodybuilding-tracker/releases/latest')
+    .then((r) => (r.ok ? r.json() : Promise.reject()))
+    .then((rel) => {
+      const apk = (rel.assets || []).find((a) => a.name.endsWith('.apk'))
+      if (!apk) return
+      document.getElementById('apk').href = apk.browser_download_url
+      document.getElementById('version').textContent = `Version ${rel.tag_name.replace(/^v/, '')} · ${(apk.size / 1e6).toFixed(1)} MB`
+    })
+    .catch(() => {})
+</script>
+</body>
+</html>

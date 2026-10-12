@@ -371,3 +371,4 @@ h1 { font-family: var(--display); font-weight: 400; letter-spacing: -0.3px; }
 .compare figcaption { font-size: 13px; color: var(--text-muted); text-align: center; }
 .big-number { font-family: var(--display); font-weight: 400; font-size: 26px; }
 .checkin-due { border-color: var(--accent); }
+.qr { width: 220px; max-width: 70%; align-self: center; border-radius: 12px; background: #fff; padding: 8px; }

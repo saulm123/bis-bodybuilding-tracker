@@ -8,6 +8,7 @@ import RemindersSection from '../components/RemindersSection'
 import RangesSection from '../components/RangesSection'
 import InstallHint from '../components/InstallHint'
 import DetailsSection from '../components/DetailsSection'
+import ShareAppSection from '../components/ShareAppSection'
 import { PHASE_LABEL } from '../lib/macros'
 import type { Phase } from '../db/schema'
 import { APP_VERSION, FLAVOR } from '../flavor'
@@ -91,6 +92,8 @@ export default function More() {
       <BackupSection settings={settings} />
 
       <InstallHint />
+
+      <ShareAppSection />
 
       <div className="card about">
         <img src="favicon.svg" alt="" width={56} height={56} className="logo" />

@@ -12,7 +12,8 @@
     "preview": "vite preview",
     "test": "vitest run --passWithNoTests",
     "icons": "node scripts/make-icons.mjs",
-    "android:sync": "cap sync android"
+    "android:sync": "cap sync android",
+    "qr": "node scripts/make-qr.mjs"
   },
   "dependencies": {
     "@capacitor/android": "^8.5.3",
@@ -38,6 +39,7 @@
     "@vitejs/plugin-react": "^6.1.2",
     "fake-indexeddb": "^6.2.5",
     "opentype.js": "^2.0.0",
+    "qrcode": "^1.5.4",
     "typescript": "^7.0.2",
     "vite": "^8.3.4",
     "vite-plugin-pwa": "^2.0.0",

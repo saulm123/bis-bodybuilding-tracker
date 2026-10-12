@@ -32,6 +32,8 @@ export default defineConfig({
       },
       workbox: {
         globPatterns: ['**/*.{js,css,html,svg,png,jpg,mp4}'],
+        // The download page must always fetch the latest release info, so don't serve it from cache.
+        globIgnores: ['**/download.html'],
       },
     }),
   ],
