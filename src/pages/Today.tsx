@@ -19,7 +19,11 @@ export default function Today() {
   const navigate = useNavigate()
   const today = isoDate()
   const entries = useLiveQuery(() => db.foodLog.where('date').equals(today).toArray(), [today])
-  const sessionToday = useLiveQuery(() => db.sessions.where('date').equals(today).first(), [today])
+  // An unfinished workout from any day takes priority, so you never end up with two open.
+  const sessionToday = useLiveQuery(
+    async () => (await db.sessions.filter((s) => !s.finishedAt).first()) ?? (await db.sessions.where('date').equals(today).first()),
+    [today],
+  )
   const weighedToday = useLiveQuery(() => db.weights.where('date').equals(today).count(), [today])
   if (!settings || !entries || !program || !trend) return null
 

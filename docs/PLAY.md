@@ -5,6 +5,10 @@ The Play version is a separate build flavour, **`play`**, with the app ID
 (the code isn't in the app at all), because Play doesn't allow steroid-related
 content. Everything else is the same.
 
+The Play build also drops Android's "exact alarm" permission (Play only allows
+it for alarm-clock and calendar apps), so reminders there may arrive a minute or
+two late. The in-app rest timer is unaffected.
+
 Because it has its own app ID, the Play version and the GitHub/F-Droid version
 can be installed side by side without clashing. Data doesn't move between them
 automatically; use Settings → Backup.
