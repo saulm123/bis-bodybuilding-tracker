@@ -4,14 +4,16 @@ import LineChart, { dayMs, shortDate } from '../../components/LineChart'
 import { formatDate } from '../../lib/dates'
 import { e1rm, formatSets } from '../../training/logic'
 import { exerciseHistory, useProgram } from '../../training/store'
+import { useUnits } from '../../lib/units'
 
 export default function ExerciseHistory() {
   const { exerciseId = '' } = useParams()
   const program = useProgram()
-  const sets = useLiveQuery(() => exerciseHistory(exerciseId), [exerciseId])
+  const u = useUnits()
+  const template = program?.days.flatMap((d) => d.exercises).find((e) => e.id === exerciseId)
+  const sets = useLiveQuery(() => exerciseHistory(exerciseId, template?.name), [exerciseId, template?.name])
   if (!sets || !program) return null
 
-  const template = program.days.flatMap((d) => d.exercises).find((e) => e.id === exerciseId)
   const name = template?.name ?? sets[0]?.exerciseName ?? 'Exercise'
   const bySession = new Map<string, typeof sets>()
   for (const s of sets.filter((s) => s.done)) bySession.set(s.sessionId, [...(bySession.get(s.sessionId) ?? []), s])
@@ -34,9 +36,9 @@ export default function ExerciseHistory() {
       ) : (
         <>
           <div className="card">
-            <h2>Estimated 1-rep max</h2>
+            <h2>Estimated 1-rep max ({u.w})</h2>
             <LineChart
-              series={[{ points: [...sessions].reverse().map((s) => ({ x: dayMs(s.date), y: s.best })), colour: 'var(--accent)', dots: true }]}
+              series={[{ points: [...sessions].reverse().map((s) => ({ x: dayMs(s.date), y: u.fromKg(s.best) })), colour: 'var(--accent)', dots: true }]}
               formatX={shortDate}
               formatY={(y) => `${Math.round(y)}`}
             />
@@ -45,7 +47,7 @@ export default function ExerciseHistory() {
           <ul className="list card">
             {sessions.map((s) => (
               <li key={s.date + s.sets[0].sessionId} className="list-row">
-                <span>{formatSets(s.sets)}</span>
+                <span>{formatSets(s.sets, u.fromKg)}</span>
                 <span className="muted small">{formatDate(s.date)}</span>
               </li>
             ))}

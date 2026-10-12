@@ -8,6 +8,7 @@ import { formatRest, formatSets, hitTopOfRange, lastPerformance } from '../../tr
 import { addSet, deleteSession, exerciseHistory, finishSession, removeSet, updateSet, useProgram } from '../../training/store'
 import { startRest } from '../../training/restTimer'
 import { useWakeLock } from '../../lib/useWakeLock'
+import { tidy, useUnits } from '../../lib/units'
 
 export default function Workout() {
   const { id = '' } = useParams()
@@ -75,14 +76,17 @@ export default function Workout() {
 }
 
 function ExerciseCard({ session, template: t, sets }: { session: Session; template: ExerciseTemplate; sets: SetEntry[] }) {
-  const history = useLiveQuery(() => exerciseHistory(t.id), [t.id])
+  const u = useUnits()
+  const history = useLiveQuery(() => exerciseHistory(t.id, t.name), [t.id, t.name])
   const last = history ? lastPerformance(history, session.id) : undefined
   const ordered = [...sets].sort((a, b) => a.setIndex - b.setIndex)
   const allDone = ordered.length > 0 && ordered.every((s) => s.done)
   const hasRange = t.repMax > 0
   const lastHitTop = hasRange && last && hitTopOfRange(t, last.sets) && t.increment > 0
   const nowHitTop = hasRange && allDone && hitTopOfRange(t, ordered)
-  const weightStep = t.increment > 0 ? Math.min(t.increment, 2.5) : 1
+  // Stepper jump in the units you see: up to 2.5 kg, or up to 5 lb.
+  const imperial = u.units === 'imperial'
+  const weightStep = t.increment > 0 ? Math.min(tidy(u.fromKg(t.increment) * 2, 0) / 2, imperial ? 5 : 2.5) : imperial ? 2.5 : 1
 
   const toggle = async (s: SetEntry) => {
     await updateSet(s.id, { done: !s.done })
@@ -107,18 +111,18 @@ function ExerciseCard({ session, template: t, sets }: { session: Session; templa
 
       {last && (
         <div className="last small">
-          <span className="muted">Last ({formatDate(last.date)}):</span> {formatSets(last.sets)}
+          <span className="muted">Last ({formatDate(last.date)}):</span> {formatSets(last.sets, u.fromKg)}
         </div>
       )}
       {lastHitTop && !session.deload && <div className="badge-up">↑ Hit the top last time: weight increased</div>}
 
       <div className="set-head small muted">
-        <span>Set</span><span>kg</span><span>Reps</span><span />
+        <span>Set</span><span>{u.w}</span><span>Reps</span><span />
       </div>
       {ordered.map((s, i) => (
         <div key={s.id} className={`set-row ${s.done ? 'set-done' : ''}`}>
           <span className="set-num">{i + 1}</span>
-          <MiniStepper label={`Set ${i + 1} weight`} value={s.weight} step={weightStep} max={500} onChange={(weight) => updateSet(s.id, { weight })} />
+          <MiniStepper label={`Set ${i + 1} weight`} value={tidy(u.fromKg(s.weight), 2)} step={weightStep} max={imperial ? 1100 : 500} onChange={(shown) => updateSet(s.id, { weight: u.toKg(shown) })} />
           <MiniStepper label={`Set ${i + 1} reps`} value={s.reps} step={1} max={100} decimals={0} onChange={(reps) => updateSet(s.id, { reps })} />
           <button className="check" aria-label={s.done ? `Undo set ${i + 1}` : `Done set ${i + 1}`} aria-pressed={s.done} onClick={() => toggle(s)}>
             ✓

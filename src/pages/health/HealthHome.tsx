@@ -7,8 +7,9 @@ import { formatDate, isoDate } from '../../lib/dates'
 import { bloodsDue, bpLevel, dosesFor, weeklyBp } from '../../health/schedule'
 import { currentCycle } from '../../health/store'
 import { useTrend } from '../../weight/useTrend'
+import { unitHelpers } from '../../lib/units'
 
-const HAS_CYCLE = import.meta.env.VITE_FLAVOR !== 'play'
+const FOSS = import.meta.env.VITE_FLAVOR !== 'play'
 
 export default function HealthHome() {
   const settings = useSettings()
@@ -16,9 +17,12 @@ export default function HealthHome() {
   const today = isoDate()
   const bp = useLiveQuery(() => db.bp.orderBy('date').reverse().limit(60).toArray(), [])
   const panels = useLiveQuery(() => db.bloodPanels.toArray(), [])
-  const cycle = useLiveQuery(() => (HAS_CYCLE ? currentCycle() : undefined), [])
+  // The cycle log is FOSS-only and opt-in (Settings → Extra features).
+  const HAS_CYCLE = FOSS && !!settings?.showCycleLog
+  const cycle = useLiveQuery(() => (HAS_CYCLE ? currentCycle() : undefined), [HAS_CYCLE])
   const injections = useLiveQuery(() => (cycle ? db.injections.where('cycleId').equals(cycle.id).toArray() : []), [cycle?.id])
   if (!settings || !bp || !panels || !injections) return null
+  const u = unitHelpers(settings.units)
 
   const week = weeklyBp(bp)[0]
   const latestBp = bp[0]
@@ -35,9 +39,9 @@ export default function HealthHome() {
       <Link to="/weight" className="card card-tile">
         <div>
           <span className="muted small">Weight</span>
-          <strong>{trend?.average ? `${trend.average.toFixed(1)} kg` : 'Log your weight'}</strong>
+          <strong>{trend?.average ? u.fmtW(trend.average) : 'Log your weight'}</strong>
         </div>
-        <span className="muted small">{trend?.rate ? `${trend.rate.perWeek >= 0 ? '+' : ''}${trend.rate.perWeek.toFixed(2)} kg/wk` : '7-day avg'}</span>
+        <span className="muted small">{trend?.rate ? `${trend.rate.perWeek >= 0 ? '+' : ''}${u.fromKg(trend.rate.perWeek).toFixed(2)} ${u.w}/wk` : '7-day avg'}</span>
       </Link>
 
       <Link to="/health/bp" className="card card-tile">

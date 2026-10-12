@@ -1,6 +1,7 @@
 import { useLiveQuery } from 'dexie-react-hooks'
 import { db, type Settings } from '../db/schema'
 import { isoDate } from '../lib/dates'
+import { unitHelpers } from '../lib/units'
 import { assess, movingAverage, reviewDue, weeklyRate, type Assessment, type Rate } from './trend'
 
 export interface TrendInfo {
@@ -19,7 +20,9 @@ export function useTrend(settings: Settings | undefined): TrendInfo | undefined 
   const latest = weights.at(-1)
   const avg = movingAverage(weights).at(-1)?.kg
   const rate = weeklyRate(weights, today)
-  const assessment = rate?.enough && avg ? assess(rate.perWeek, settings.phase, avg) : undefined
+  const u = unitHelpers(settings.units)
+  const fmt = (kg: number) => `${u.fromKg(kg).toFixed(2)} ${u.w}`
+  const assessment = rate?.enough && avg ? assess(rate.perWeek, settings.phase, avg, fmt) : undefined
   const suggest = !!assessment && assessment.kcalChange !== 0 && reviewDue(settings.lastCalorieReviewAt, weights[0]?.date, today)
   return { latest, average: avg, rate, assessment, suggest }
 }

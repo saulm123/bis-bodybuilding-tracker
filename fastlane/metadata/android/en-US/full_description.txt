@@ -1,25 +1,31 @@
-BIS Bodybuilding Tracker is a fast, offline tracker for people who lift. Everything is stored on your phone. There are no accounts, no ads, no analytics and no Google services.
+BIS Bodybuilding Tracker is a fast, offline tracker for people who lift, whether you're new to the gym or have years of training behind you. Everything is stored on your phone. There are no accounts, no ads, no analytics and no Google services.
+
+<b>Set up in a minute</b>
+<ul>
+<li>Tell it your sex, age, height, weight, activity level and goal (lose fat, maintain or build muscle)</li>
+<li>It works out your calories, protein, carbs and fat with the Mifflin-St Jeor formula, and you can adjust any number</li>
+<li>Kilograms or pounds, centimetres or feet and inches</li>
+</ul>
+
+<b>Training plans</b>
+<ul>
+<li>Pick from full body, home dumbbells, strength basics, upper/lower, glutes and legs focus, push/pull/legs and more (3 to 6 days a week)</li>
+<li>Edit any plan: exercises, sets, rep ranges, rest times</li>
+<li>Last session's numbers next to every exercise, and weight goes up automatically when you hit the top of the rep range</li>
+<li>Rest timer, deload reminders, exercise history and a cardio log</li>
+</ul>
 
 <b>Nutrition</b>
 <ul>
-<li>Daily calorie, protein, carb and fat targets with a bulk/cut switch</li>
 <li>Food search and barcode scanning using the free Open Food Facts database</li>
-<li>Saved meals and one-tap favourites</li>
-<li>Weight log with a 7-day average trend and calorie adjustment suggestions</li>
-</ul>
-
-<b>Training</b>
-<ul>
-<li>Editable 5-day split with sets, reps and weight logging</li>
-<li>Last session's numbers shown next to every exercise</li>
-<li>"Add weight" flag when you hit the top of the rep range</li>
-<li>Rest timer, deload reminders and cardio log</li>
+<li>Favourites, saved meals, quick add, copy yesterday</li>
+<li>Weight log with a 7-day average and a calorie check-in every two weeks</li>
 </ul>
 
 <b>Health</b>
 <ul>
 <li>Blood pressure and resting heart rate with weekly averages</li>
-<li>Blood test tracker with reminders</li>
+<li>Blood test tracker with male and female reference ranges, and reminders</li>
 <li>Daily supplement checklist</li>
 </ul>
 

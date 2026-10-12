@@ -1,12 +1,13 @@
 import { useState } from 'react'
 import { useSettings, saveSettings } from '../db/settings'
 import Segmented from '../components/Segmented'
-import Stepper from '../components/Stepper'
 import TargetsEditor from '../components/TargetsEditor'
 import BackupSection from '../components/BackupSection'
 import RemindersSection from '../components/RemindersSection'
 import RangesSection from '../components/RangesSection'
 import InstallHint from '../components/InstallHint'
+import DetailsSection from '../components/DetailsSection'
+import { PHASE_LABEL } from '../lib/macros'
 import type { Phase } from '../db/schema'
 import { APP_VERSION, FLAVOR } from '../flavor'
 
@@ -20,17 +21,14 @@ export default function More() {
       <h1>Settings</h1>
 
       <div className="card stack">
-        <h2>Bulk or cut</h2>
+        <h2>Goal</h2>
         <Segmented
           label="Phase"
           value={settings.phase}
           onChange={(phase) => saveSettings({ phase })}
-          options={[
-            { value: 'bulk', label: 'Bulk' },
-            { value: 'cut', label: 'Cut' },
-          ]}
+          options={(['cut', 'maintain', 'bulk'] as const).map((p) => ({ value: p, label: PHASE_LABEL[p] }))}
         />
-        <p className="muted small">Switching changes today's targets straight away. Both sets of targets are kept.</p>
+        <p className="muted small">Switching changes today's targets straight away. Each goal keeps its own targets.</p>
       </div>
 
       <div className="card stack">
@@ -39,10 +37,7 @@ export default function More() {
           label="Targets to edit"
           value={editing ?? settings.phase}
           onChange={setEditing}
-          options={[
-            { value: 'bulk', label: 'Bulk targets' },
-            { value: 'cut', label: 'Cut targets' },
-          ]}
+          options={(['cut', 'maintain', 'bulk'] as const).map((p) => ({ value: p, label: PHASE_LABEL[p] }))}
         />
         <TargetsEditor
           value={settings.targets[editing ?? settings.phase]}
@@ -50,10 +45,17 @@ export default function More() {
         />
       </div>
 
-      <div className="card stack">
-        <h2>Body</h2>
-        <Stepper label="Height" value={settings.heightCm} min={120} max={230} suffix="cm" onChange={(heightCm) => saveSettings({ heightCm })} />
-      </div>
+      <DetailsSection settings={settings} />
+
+      {import.meta.env.VITE_FLAVOR !== 'play' && (
+        <div className="card stack">
+          <h2>Extra features</h2>
+          <label className="toggle">
+            <input type="checkbox" checked={settings.showCycleLog} onChange={(e) => saveSettings({ showCycleLog: e.target.checked })} />
+            <span>Cycle log (compounds, injection days and site rotation). Also adds before / mid / after blood test reminders.</span>
+          </label>
+        </div>
+      )}
 
       <RemindersSection settings={settings} />
 

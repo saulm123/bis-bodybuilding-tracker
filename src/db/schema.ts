@@ -10,7 +10,11 @@ export interface BaseRecord {
   updatedAt: string
 }
 
-export type Phase = 'bulk' | 'cut'
+export type Phase = 'cut' | 'maintain' | 'bulk'
+export type Sex = 'male' | 'female'
+export type Activity = 'sedentary' | 'light' | 'moderate' | 'physicalJob' | 'veryActive'
+export type DietStyle = 'balanced' | 'lowCarb' | 'keto'
+export type Units = 'metric' | 'imperial'
 
 /** Fat isn't stored: it fills whatever calories protein and carbs leave. */
 export interface MacroTargets {
@@ -23,6 +27,14 @@ export interface Settings {
   id: 'app'
   onboarded: boolean
   heightCm: number
+  sex: Sex
+  birthYear: number
+  activity: Activity
+  dietStyle: DietStyle
+  /** Display units. Everything is stored in kg / cm. */
+  units: Units
+  /** Cycle log is opt-in (FOSS build only). */
+  showCycleLog: boolean
   phase: Phase
   targets: Record<Phase, MacroTargets>
   backupReminderDays: number
@@ -79,6 +91,8 @@ export interface DayTemplate {
 }
 
 export interface Program extends BaseRecord {
+  /** Which built-in plan this started from (see training/templates.ts). */
+  templateId?: string
   days: DayTemplate[]
 }
 
@@ -260,6 +274,10 @@ export class BisDb extends Dexie {
     // v4: notice cycle edits
     this.version(4).stores({
       cycles: 'id, startDate, updatedAt',
+    })
+    // v5: exercise history follows the exercise name across plans
+    this.version(5).stores({
+      sets: 'id, sessionId, exerciseId, date, [exerciseId+date], exerciseName',
     })
   }
 }

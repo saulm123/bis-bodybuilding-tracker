@@ -4,9 +4,9 @@ import { DEFAULT_TARGETS, fatGrams, isOverBudget } from './macros'
 describe('fatGrams', () => {
   it('fills the calories left after protein and carbs', () => {
     // 3500 - 200*4 - 150*4 = 2100 kcal -> 233 g fat
-    expect(fatGrams(DEFAULT_TARGETS.bulk)).toBe(233)
+    expect(fatGrams({ kcal: 3500, protein: 200, netCarbs: 150 })).toBe(233)
     // 2700 - 220*4 - 100*4 = 1420 kcal -> 158 g fat
-    expect(fatGrams(DEFAULT_TARGETS.cut)).toBe(158)
+    expect(fatGrams({ kcal: 2700, protein: 220, netCarbs: 100 })).toBe(158)
   })
 
   it('never goes negative', () => {

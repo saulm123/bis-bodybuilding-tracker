@@ -7,17 +7,21 @@ All data stays on your phone. No accounts, no analytics, no Google services.
 
 ## Features
 
-- **Nutrition**: daily calorie/protein/net-carb/fat targets with a bulk/cut switch (fat fills the
-  remaining calories). Food search and barcode scanning via Open Food Facts (on-device ZXing scanner),
+- **Setup for anyone**: sex, age, height, weight, activity and goal (cut / maintain / bulk) → calorie and
+  macro targets from the Mifflin-St Jeor formula. kg or lb, cm or ft/in.
+- **Training plans**: full body (3 days), home dumbbells (3), strength basics (3), upper/lower (4),
+  glutes and legs focus (4), push/pull/legs + upper/lower (5), push/pull/legs ×2 (6). Switch any time;
+  history carries over.
+- **Nutrition**: daily calorie/protein/net-carb/fat targets per goal (fat fills the remaining calories). Food search and barcode scanning via Open Food Facts (on-device ZXing scanner),
   favourites, saved meals, quick add, copy the previous day.
 - **Weight**: daily weigh-ins, 7-day average trend, weekly rate, and a ±200 kcal suggestion every two
   weeks when you're gaining too fast or too slowly (or losing outside 0.5–1%/week on a cut).
-- **Training**: editable 5-day split, set logging with big buttons, last session's numbers, an automatic
+- **Training**: editable plans, set logging with big buttons, last session's numbers, an automatic
   "add weight" bump when you hit the top of the rep range on every set, rest timer with notifications,
   deload reminders at 6–8 weeks, exercise history with estimated 1RM, cardio log.
 - **Health**: blood pressure and resting HR with weekly averages; blood test tracker (haematocrit, lipids,
-  liver, kidney, hormones) with editable ranges and reminders; daily supplement checklist; cycle log
-  (GitHub/F-Droid build only).
+  liver, kidney, hormones) with male/female ranges you can edit, and reminders; daily supplement checklist;
+  optional cycle log (GitHub/F-Droid build only, off by default).
 - **Privacy**: everything stored locally (IndexedDB), JSON backup/restore, dark mode, big tap targets.
 
 ## Install

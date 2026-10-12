@@ -1,4 +1,4 @@
-import { useEffect, useId, useState } from 'react'
+import { useEffect, useId, useRef, useState } from 'react'
 
 interface Props {
   label: string
@@ -15,13 +15,28 @@ interface Props {
 export default function Stepper({ label, value, onChange, step = 1, min = 0, max = 99999, decimals = 0, suffix }: Props) {
   const id = useId()
   const [draft, setDraft] = useState(String(value))
-  useEffect(() => setDraft(String(value)), [value])
+  // The latest value, updated instantly on each tap. Saving is async, so reading the
+  // `value` prop would lose taps made in quick succession.
+  const latest = useRef(value)
+  const lastTap = useRef(0)
+  useEffect(() => {
+    // Ignore older saved values arriving while you're still tapping.
+    if (value !== latest.current && Date.now() - lastTap.current < 1500) return
+    latest.current = value
+    setDraft(String(value))
+  }, [value])
 
   const clean = (n: number) => {
     const f = 10 ** decimals
     return Math.min(max, Math.max(min, Math.round(n * f) / f))
   }
-  const nudge = (delta: number) => onChange(clean(value + delta))
+  const nudge = (delta: number) => {
+    const v = clean(latest.current + delta)
+    latest.current = v
+    lastTap.current = Date.now()
+    setDraft(String(v))
+    onChange(v)
+  }
 
   return (
     <div className="stepper">
@@ -38,7 +53,11 @@ export default function Stepper({ label, value, onChange, step = 1, min = 0, max
             onChange={(e) => {
               setDraft(e.target.value)
               const n = parseFloat(e.target.value.replace(',', '.'))
-              if (Number.isFinite(n) && n >= min && n <= max) onChange(clean(n))
+              if (Number.isFinite(n) && n >= min && n <= max) {
+                latest.current = clean(n)
+              lastTap.current = Date.now()
+                onChange(latest.current)
+              }
             }}
             onBlur={() => setDraft(String(value))}
             onFocus={(e) => e.target.select()}

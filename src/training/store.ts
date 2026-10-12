@@ -4,6 +4,10 @@ import { saveSettings } from '../db/settings'
 import { isoDate } from '../lib/dates'
 import { defaultDays } from './defaultProgram'
 import { lastPerformance, planSets } from './logic'
+import { planDays, PLANS } from './templates'
+import { getSettings } from '../db/settings'
+import { KG_PER_LB } from '../lib/units'
+import type { Units } from '../db/schema'
 
 const PROGRAM_ID = 'main'
 
@@ -40,12 +44,31 @@ export async function updateDay(day: DayTemplate): Promise<void> {
   await saveDays(program.days.map((d) => (d.id === day.id ? day : d)))
 }
 
-export async function resetProgram(): Promise<void> {
-  await saveDays(defaultDays())
+/** Switches to a built-in plan. Workout history is kept. */
+export async function applyPlan(planId: string, units: Units): Promise<void> {
+  const plan = PLANS.find((p) => p.id === planId)
+  if (!plan) return
+  const program = await getProgram()
+  await db.program.put({ ...program, templateId: plan.id, days: planDays(plan, units), updatedAt: nowIso() })
 }
 
-export async function exerciseHistory(exerciseId: string): Promise<SetEntry[]> {
-  return db.sets.where('[exerciseId+date]').between([exerciseId, ''], [exerciseId, '￿']).toArray()
+/** Removes your edits by re-applying the plan you started from. */
+export async function resetProgram(): Promise<void> {
+  const program = await getProgram()
+  const { units } = await getSettings()
+  await applyPlan(program.templateId ?? 'ppl-ul-5', units)
+}
+
+/**
+ * Every logged set of an exercise. Matches by id, and also by name so your
+ * history carries over when you switch to a plan with the same lift.
+ */
+export async function exerciseHistory(exerciseId: string, name?: string): Promise<SetEntry[]> {
+  const byId = await db.sets.where('[exerciseId+date]').between([exerciseId, ''], [exerciseId, '￿']).toArray()
+  if (!name) return byId
+  const byName = await db.sets.where('exerciseName').equalsIgnoreCase(name).toArray()
+  const seen = new Set(byId.map((s) => s.id))
+  return byId.concat(byName.filter((s) => !seen.has(s.id)))
 }
 
 /** Creates a session with set rows pre-filled from last time (with progression applied). */
@@ -54,9 +77,12 @@ export async function startSession(day: DayTemplate, deload: boolean, date = iso
   const now = nowIso()
   const session: Session = { id: newId(), date, dayId: day.id, dayName: day.name, startedAt: now, deload, createdAt: now, updatedAt: now }
   const rows: SetEntry[] = []
+  const { units } = await getSettings()
+  // Round planned weights to 0.25 kg, or 0.5 lb for imperial users.
+  const roundKg = units === 'imperial' ? 0.5 * KG_PER_LB : 0.25
   for (const ex of day.exercises) {
-    const last = lastPerformance(await exerciseHistory(ex.id))
-    planSets(ex, last, deload).forEach((p, setIndex) =>
+    const last = lastPerformance(await exerciseHistory(ex.id, ex.name))
+    planSets(ex, last, deload, roundKg).forEach((p, setIndex) =>
       rows.push({
         id: newId(), sessionId: session.id, exerciseId: ex.id, exerciseName: ex.name, date, setIndex,
         weight: p.weight, reps: p.reps, done: false, createdAt: now, updatedAt: now,

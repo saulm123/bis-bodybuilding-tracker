@@ -42,13 +42,13 @@ export interface PlannedSet {
  * Same weights as last time; if every set hit the top of the range, add the increment and
  * drop back to the bottom of the range. A deload keeps the weight but halves the sets.
  */
-export function planSets(t: ExerciseTemplate, last: Performance | undefined, deload = false): PlannedSet[] {
+export function planSets(t: ExerciseTemplate, last: Performance | undefined, deload = false, roundKg = 0.25): PlannedSet[] {
   const count = deload ? Math.max(1, Math.ceil(t.sets / 2)) : t.sets
   const progress = !deload && last !== undefined && hitTopOfRange(t, last.sets) && t.increment > 0
   return Array.from({ length: count }, (_, i) => {
     const prev = last?.sets[i] ?? last?.sets[last.sets.length - 1]
     if (!prev) return { weight: 0, reps: t.repMin }
-    if (progress) return { weight: roundTo(prev.weight + t.increment, 0.25), reps: t.repMin }
+    if (progress) return { weight: roundTo(prev.weight + t.increment, roundKg), reps: t.repMin }
     return { weight: prev.weight, reps: Math.min(Math.max(prev.reps, t.repMin), t.repMax) }
   })
 }
@@ -78,6 +78,7 @@ export function formatRest(sec: number): string {
   return m ? `${m}:${String(s).padStart(2, '0')}` : `${s}s`
 }
 
-export function formatSets(sets: { weight: number; reps: number }[]): string {
-  return sets.map((s) => (s.weight ? `${s.weight}×${s.reps}` : `${s.reps}`)).join(' · ')
+/** "32.5×10 · 32.5×9". Pass `fromKg` to show pounds. */
+export function formatSets(sets: { weight: number; reps: number }[], fromKg: (kg: number) => number = (kg) => kg): string {
+  return sets.map((s) => (s.weight ? `${+fromKg(s.weight).toFixed(1)}×${s.reps}` : `${s.reps}`)).join(' · ')
 }

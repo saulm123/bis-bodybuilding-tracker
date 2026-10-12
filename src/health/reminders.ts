@@ -31,7 +31,7 @@ export async function syncReminders(settings: Settings): Promise<void> {
     notifications.push({ id: NOTIFY.supplementsDaily, title: 'Supplements', body: 'Tick off today’s supplements.', schedule: { on: { hour, minute }, allowWhileIdle: true } })
   }
 
-  const cycle = HAS_CYCLE_LOG ? await currentCycle() : undefined
+  const cycle = HAS_CYCLE_LOG && settings.showCycleLog ? await currentCycle() : undefined
   if (HAS_CYCLE_LOG && cycle && settings.injectionReminder) {
     const injections = await db.injections.where('cycleId').equals(cycle.id).toArray()
     let id = NOTIFY.injectionBase

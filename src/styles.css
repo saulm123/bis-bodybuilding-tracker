@@ -244,3 +244,15 @@ select { appearance: none; }
 .error-text { white-space: pre-wrap; background: var(--surface); padding: 12px; border-radius: 12px; font-size: 13px; color: var(--danger); }
 .tab svg { display: block; }
 .pill { text-decoration: none; }
+
+/* ---- Onboarding wizard ---- */
+.progress { height: 6px; border-radius: 3px; background: var(--surface-2); overflow: hidden; }
+.progress div { height: 100%; background: var(--accent); transition: width 0.3s; }
+.wizard-nav { display: flex; gap: 8px; position: sticky; bottom: 0; padding: 12px 0 calc(8px + env(safe-area-inset-bottom)); background: linear-gradient(transparent, var(--bg) 30%); }
+.radio-cards { display: flex; flex-direction: column; gap: 8px; }
+.radio-card { display: flex; flex-direction: column; gap: 2px; text-align: left; padding: 14px 16px; border-radius: 14px; border: 1px solid var(--border); background: var(--surface-2); color: var(--text); font: inherit; cursor: pointer; min-height: var(--tap); }
+.radio-card.on { border-color: var(--accent); box-shadow: inset 0 0 0 1px var(--accent); }
+.badge { font-size: 12px; font-weight: 700; padding: 2px 8px; border-radius: 10px; background: #3a2a10; color: var(--accent); }
+.two-col { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 8px; }
+.two-col .mini { height: var(--tap); grid-template-columns: 40px 1fr 40px; }
+.pill-maintain { background: #1f2a3a; color: #8cb8ff; }

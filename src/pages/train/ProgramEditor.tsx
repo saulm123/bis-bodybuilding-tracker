@@ -6,6 +6,7 @@ import Segmented from '../../components/Segmented'
 import Stepper from '../../components/Stepper'
 import { WEEKDAYS } from '../../training/logic'
 import { resetProgram, updateDay, useProgram } from '../../training/store'
+import { tidy, useUnits } from '../../lib/units'
 
 export function ProgramEditor() {
   const program = useProgram()
@@ -15,9 +16,10 @@ export function ProgramEditor() {
   return (
     <section className="stack">
       <div className="row-between">
-        <h1>Your split</h1>
+        <h1>Your plan</h1>
         <Link to="/train" className="btn btn-small">Done</Link>
       </div>
+      <Link to="/train/plans" className="btn btn-block">Choose a different plan</Link>
       <p className="muted small">Changes apply to your next workout. Past workouts keep what you actually did.</p>
       <ul className="list card">
         {[...program.days].sort((a, b) => a.weekday - b.weekday).map((d) => (
@@ -30,11 +32,11 @@ export function ProgramEditor() {
         ))}
       </ul>
       {!confirmReset ? (
-        <button className="btn btn-ghost btn-block" onClick={() => setConfirmReset(true)}>Reset split to the default</button>
+        <button className="btn btn-ghost btn-block" onClick={() => setConfirmReset(true)}>Undo my changes to this plan</button>
       ) : (
         <div className="confirm stack">
-          <p>Replace your split with the built-in 5-day split? Your workout history is kept.</p>
-          <button className="btn btn-danger btn-block" onClick={async () => { await resetProgram(); setConfirmReset(false) }}>Reset split</button>
+          <p>Put this plan back to how it came, removing your edits? Your workout history is kept.</p>
+          <button className="btn btn-danger btn-block" onClick={async () => { await resetProgram(); setConfirmReset(false) }}>Reset plan</button>
           <button className="btn btn-ghost btn-block" onClick={() => setConfirmReset(false)}>Cancel</button>
         </div>
       )}
@@ -46,6 +48,7 @@ export function DayEditor() {
   const { dayId } = useParams()
   const program = useProgram()
   const [open, setOpen] = useState<string | null>(null)
+  const u = useUnits()
   const day = program?.days.find((d) => d.id === dayId)
   if (!program) return null
   if (!day) return <p className="muted">Day not found. <Link to="/train/program">Back</Link></p>
@@ -107,7 +110,7 @@ export function DayEditor() {
                   <Stepper label="Reps, bottom of range" value={ex.repMin} min={1} max={50} onChange={(repMin) => updateEx({ ...ex, repMin, repMax: Math.max(repMin, ex.repMax) })} />
                   <Stepper label="Reps, top of range" value={ex.repMax} min={1} max={50} onChange={(repMax) => updateEx({ ...ex, repMax, repMin: Math.min(repMax, ex.repMin) })} />
                   <Stepper label="Rest after each set" value={ex.restSec} step={15} max={600} suffix="sec" onChange={(restSec) => updateEx({ ...ex, restSec })} />
-                  <Stepper label="Weight to add when you hit the top" value={ex.increment} step={0.5} decimals={1} max={20} suffix="kg" onChange={(increment) => updateEx({ ...ex, increment })} />
+                  <Stepper label="Weight to add when you hit the top" value={tidy(u.fromKg(ex.increment))} step={0.5} decimals={1} max={40} suffix={u.w} onChange={(shown) => updateEx({ ...ex, increment: u.toKg(shown) })} />
                   <label className="field">
                     <span>Superset letter (same letter = done back to back)</span>
                     <input value={ex.superset ?? ''} maxLength={2} onChange={(e) => updateEx({ ...ex, superset: e.target.value.toUpperCase() || undefined })} />

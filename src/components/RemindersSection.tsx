@@ -3,7 +3,7 @@ import { saveSettings } from '../db/settings'
 import { notificationsSupported } from '../lib/notify'
 import Stepper from './Stepper'
 
-const HAS_CYCLE = import.meta.env.VITE_FLAVOR !== 'play'
+const FOSS = import.meta.env.VITE_FLAVOR !== 'play'
 
 function TimeToggle({ label, value, onChange }: { label: string; value?: string; onChange: (v: string | undefined) => void }) {
   return (
@@ -18,6 +18,7 @@ function TimeToggle({ label, value, onChange }: { label: string; value?: string;
 }
 
 export default function RemindersSection({ settings }: { settings: Settings }) {
+  const HAS_CYCLE = FOSS && settings.showCycleLog
   return (
     <div className="card stack">
       <h2>Reminders</h2>

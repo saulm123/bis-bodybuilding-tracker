@@ -29,7 +29,7 @@ export default function TrainHome() {
     <section className="stack">
       <div className="row-between">
         <h1>Train</h1>
-        <Link to="/train/program" className="btn btn-small">Edit split</Link>
+        <Link to="/train/program" className="btn btn-small">Plan</Link>
       </div>
 
       {inDeload && <div className="banner">Deload week until {formatDate(settings.deloadUntil!)}: half the sets, same weights.</div>}

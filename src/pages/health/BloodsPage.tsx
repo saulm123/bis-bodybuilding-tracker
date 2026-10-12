@@ -9,12 +9,13 @@ import { flag, MARKERS, rangeFor, rangeText } from '../../health/markers'
 import { bloodsDue } from '../../health/schedule'
 import { currentCycle } from '../../health/store'
 
-const HAS_CYCLE = import.meta.env.VITE_FLAVOR !== 'play'
+const FOSS = import.meta.env.VITE_FLAVOR !== 'play'
 
 export default function BloodsPage() {
   const settings = useSettings()
   const panels = useLiveQuery(() => db.bloodPanels.orderBy('date').reverse().toArray(), [])
-  const cycle = useLiveQuery(() => (HAS_CYCLE ? currentCycle() : undefined), [])
+  const HAS_CYCLE = FOSS && !!settings?.showCycleLog
+  const cycle = useLiveQuery(() => (HAS_CYCLE ? currentCycle() : undefined), [HAS_CYCLE])
   const [open, setOpen] = useState<string | null>(null)
   if (!settings || !panels) return null
 
@@ -49,7 +50,7 @@ export default function BloodsPage() {
             {MARKERS.map((m) => {
               const history = panels.filter((p) => m.key in p.values).map((p) => ({ date: p.date, v: p.values[m.key] }))
               if (!history.length) return null
-              const range = rangeFor(m, settings.markerRanges)
+              const range = rangeFor(m, settings.markerRanges, settings.sex)
               const latest = history[0]
               const f = flag(latest.v, range)
               return (
@@ -80,7 +81,7 @@ export default function BloodsPage() {
               )
             })}
           </ul>
-          <p className="muted small">Ranges are typical UK adult male defaults. Change them in More → Bloods ranges to match your lab. This is a log, not medical advice.</p>
+          <p className="muted small">Ranges are typical UK adult {settings.sex} defaults. Change them in More → Bloods ranges to match your lab. This is a log, not medical advice.</p>
         </div>
       )}
 

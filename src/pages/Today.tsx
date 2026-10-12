@@ -11,6 +11,8 @@ import { entryTotals, sum, targetTotals } from '../nutrition/macros'
 import { weekdayOf } from '../training/logic'
 import { startSession, useProgram } from '../training/store'
 import { useTrend } from '../weight/useTrend'
+import { PHASE_STATUS } from '../lib/macros'
+import { unitHelpers } from '../lib/units'
 
 export default function Today() {
   const settings = useSettings()
@@ -35,7 +37,7 @@ export default function Today() {
       <BackupBanner settings={settings} />
       <div className="row-between">
         <h1>Today</h1>
-        <Link to="/more" className={`pill pill-${settings.phase}`}>{settings.phase === 'bulk' ? 'Bulking' : 'Cutting'}</Link>
+        <Link to="/more" className={`pill pill-${settings.phase}`}>{PHASE_STATUS[settings.phase]}</Link>
       </div>
 
       <CalorieSuggestion settings={settings} trend={trend} />
@@ -71,7 +73,7 @@ export default function Today() {
       <Link to="/weight" className="card card-tile">
         <div>
           <span className="muted small">Weight · 7-day average</span>
-          <strong>{trend.average ? `${trend.average.toFixed(1)} kg` : '–'}</strong>
+          <strong>{trend.average ? unitHelpers(settings.units).fmtW(trend.average) : '–'}</strong>
         </div>
         <span className={weighedToday ? 'ok small' : 'btn btn-small'}>{weighedToday ? '✓ Weighed in' : 'Weigh in'}</span>
       </Link>

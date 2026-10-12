@@ -2,7 +2,8 @@ import { useLiveQuery } from 'dexie-react-hooks'
 import { useState } from 'react'
 import { db } from '../db/schema'
 import { logWeight, useSettings } from '../db/settings'
-import Stepper from '../components/Stepper'
+import { WeightInput } from '../components/BodyInputs'
+import { useUnits } from '../lib/units'
 import LineChart, { dayMs, shortDate } from '../components/LineChart'
 import CalorieSuggestion from '../components/CalorieSuggestion'
 import { formatDate, isoDate } from '../lib/dates'
@@ -15,6 +16,7 @@ export default function WeightPage() {
   const weights = useLiveQuery(() => db.weights.orderBy('date').toArray(), [])
   const [kg, setKg] = useState<number | null>(null)
   const [saved, setSaved] = useState(false)
+  const u = useUnits()
   if (!settings || !trend || !weights) return null
 
   const today = isoDate()
@@ -28,7 +30,7 @@ export default function WeightPage() {
       <h1>Weight</h1>
 
       <div className="card stack">
-        <Stepper label={todays ? "Today's weight (logged, tap to change)" : "Today's weight"} value={value} step={0.1} decimals={1} min={30} max={300} suffix="kg" onChange={setKg} />
+        <WeightInput units={settings.units} kg={value} onChange={setKg} label={todays ? "Today's weight (logged, tap to change)" : "Today's weight"} />
         <button
           className="btn btn-primary btn-block"
           onClick={async () => {
@@ -45,8 +47,8 @@ export default function WeightPage() {
       </div>
 
       <div className="macro-grid three">
-        <div><span>7-day average</span><strong>{trend.average ? trend.average.toFixed(1) : '–'}</strong></div>
-        <div><span>Per week</span><strong>{trend.rate ? `${trend.rate.perWeek >= 0 ? '+' : ''}${trend.rate.perWeek.toFixed(2)}` : '–'}</strong></div>
+        <div><span>7-day avg ({u.w})</span><strong>{trend.average ? u.fromKg(trend.average).toFixed(1) : '–'}</strong></div>
+        <div><span>{u.w} per week</span><strong>{trend.rate ? `${trend.rate.perWeek >= 0 ? '+' : ''}${u.fromKg(trend.rate.perWeek).toFixed(2)}` : '–'}</strong></div>
         <div><span>Last 14 days</span><strong>{trend.rate?.count ?? 0}<small> weigh-ins</small></strong></div>
       </div>
 
@@ -58,8 +60,8 @@ export default function WeightPage() {
         <h2>Last 90 days</h2>
         <LineChart
           series={[
-            { points: recent.map((w) => ({ x: dayMs(w.date), y: w.kg })), colour: 'var(--text-muted)', dots: true, width: 0 },
-            { points: avg.map((w) => ({ x: dayMs(w.date), y: w.kg })), colour: 'var(--accent)', width: 3 },
+            { points: recent.map((w) => ({ x: dayMs(w.date), y: u.fromKg(w.kg) })), colour: 'var(--text-muted)', dots: true, width: 0 },
+            { points: avg.map((w) => ({ x: dayMs(w.date), y: u.fromKg(w.kg) })), colour: 'var(--accent)', width: 3 },
           ]}
           formatX={shortDate}
           formatY={(y) => y.toFixed(1)}
@@ -71,7 +73,7 @@ export default function WeightPage() {
         <ul className="list card">
           {[...weights].reverse().slice(0, 30).map((w) => (
             <li key={w.id} className="list-row">
-              <span>{w.kg.toFixed(1)} kg</span>
+              <span>{u.fmtW(w.kg)}</span>
               <span className="row-actions">
                 <span className="muted small">{formatDate(w.date)}</span>
                 <button className="btn btn-small btn-ghost" aria-label={`Delete ${formatDate(w.date)}`} onClick={() => db.weights.delete(w.id)}>✕</button>

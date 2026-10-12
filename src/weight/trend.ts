@@ -54,19 +54,26 @@ export interface Assessment {
 
 /**
  * Bulk: aim for +0.2 to +0.5 kg/week.
+ * Maintain: stay within ±0.2 kg/week.
  * Cut: aim to lose 0.5–1.0% of bodyweight per week.
+ * `fmt` turns kg into display text (e.g. "0.35 kg" or "0.77 lb").
  */
-export function assess(rate: number, phase: Phase, bodyweight: number): Assessment {
-  const r = rate.toFixed(2)
+export function assess(rate: number, phase: Phase, bodyweight: number, fmt: (kg: number) => string = (kg) => `${kg.toFixed(2)} kg`): Assessment {
+  const r = `${rate >= 0 ? '+' : '−'}${fmt(Math.abs(rate))}/week`
   if (phase === 'bulk') {
-    if (rate > 0.5) return { verdict: 'too-fast', kcalChange: -200, message: `Gaining ${r} kg/week. Faster than 0.5 kg/week is likely extra fat.` }
-    if (rate < 0.2) return { verdict: 'too-slow', kcalChange: 200, message: `Gaining ${r} kg/week. Under 0.2 kg/week: eat more.` }
-    return { verdict: 'on-track', kcalChange: 0, message: `Gaining ${r} kg/week. Right in the 0.2–0.5 kg/week zone.` }
+    if (rate > 0.5) return { verdict: 'too-fast', kcalChange: -200, message: `Gaining ${r}. Faster than ${fmt(0.5)}/week is likely extra fat.` }
+    if (rate < 0.2) return { verdict: 'too-slow', kcalChange: 200, message: `Changing ${r}. Under ${fmt(0.2)}/week gain: eat more.` }
+    return { verdict: 'on-track', kcalChange: 0, message: `Gaining ${r}. Right in the ${fmt(0.2)}–${fmt(0.5)}/week zone.` }
+  }
+  if (phase === 'maintain') {
+    if (rate > 0.2) return { verdict: 'too-fast', kcalChange: -200, message: `Weight going up ${r}. Eat a little less to hold steady.` }
+    if (rate < -0.2) return { verdict: 'too-slow', kcalChange: 200, message: `Weight going down ${r}. Eat a little more to hold steady.` }
+    return { verdict: 'on-track', kcalChange: 0, message: `Steady (${r}). Maintenance is spot on.` }
   }
   const lossPct = (-rate / bodyweight) * 100
   const pct = lossPct.toFixed(1)
   if (lossPct > 1) return { verdict: 'too-fast', kcalChange: 200, message: `Losing ${pct}% of bodyweight a week. Over 1% risks muscle; eat a bit more.` }
-  if (rate >= 0) return { verdict: 'too-slow', kcalChange: -200, message: `Not losing weight (${rate >= 0 ? '+' : ''}${r} kg/week). Cut a little more.` }
+  if (rate >= 0) return { verdict: 'too-slow', kcalChange: -200, message: `Not losing weight (${r}). Cut a little more.` }
   if (lossPct < 0.5) return { verdict: 'too-slow', kcalChange: -200, message: `Losing ${pct}% of bodyweight a week. Under 0.5%: cut a little more.` }
   return { verdict: 'on-track', kcalChange: 0, message: `Losing ${pct}% of bodyweight a week. Right in the 0.5–1% zone.` }
 }

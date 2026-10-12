@@ -8,7 +8,7 @@ export default function RangesSection({ settings }: { settings: Settings }) {
   const [open, setOpen] = useState(false)
   const set = (key: string, side: 'low' | 'high', text: string) => {
     const n = parseFloat(text.replace(',', '.'))
-    const current = { ...rangeFor(MARKERS.find((m) => m.key === key)!, settings.markerRanges) }
+    const current = { ...rangeFor(MARKERS.find((m) => m.key === key)!, settings.markerRanges, settings.sex) }
     current[side] = Number.isFinite(n) ? n : undefined
     saveSettings({ markerRanges: { ...settings.markerRanges, [key]: current } })
   }
@@ -22,7 +22,7 @@ export default function RangesSection({ settings }: { settings: Settings }) {
         <>
           <p className="muted small">Copy the reference ranges from your lab report. Blank = no limit.</p>
           {MARKERS.map((m) => {
-            const r = rangeFor(m, settings.markerRanges)
+            const r = rangeFor(m, settings.markerRanges, settings.sex)
             return (
               <div key={m.key} className="range-row">
                 <span className="small">{m.name} <span className="muted">({m.unit})</span></span>

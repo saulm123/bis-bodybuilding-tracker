@@ -2,11 +2,15 @@ import type { MacroTargets, Phase } from '../db/schema'
 
 export const KCAL_PER_G = { protein: 4, carbs: 4, fat: 9 } as const
 
-/** Starting targets from the plan. Every number is editable in Settings. */
+/** Fallback targets before anything is worked out from your details. */
 export const DEFAULT_TARGETS: Record<Phase, MacroTargets> = {
-  bulk: { kcal: 3500, protein: 200, netCarbs: 150 },
-  cut: { kcal: 2700, protein: 220, netCarbs: 100 },
+  cut: { kcal: 2200, protein: 170, netCarbs: 150 },
+  maintain: { kcal: 2600, protein: 150, netCarbs: 250 },
+  bulk: { kcal: 2900, protein: 160, netCarbs: 300 },
 }
+
+export const PHASE_LABEL: Record<Phase, string> = { cut: 'Cut', maintain: 'Maintain', bulk: 'Bulk' }
+export const PHASE_STATUS: Record<Phase, string> = { cut: 'Cutting', maintain: 'Maintaining', bulk: 'Bulking' }
 
 /** Grams of fat that fill the calories left after protein and carbs (never below 0). */
 export function fatGrams(t: MacroTargets): number {

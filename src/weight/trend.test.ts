@@ -35,6 +35,9 @@ describe('weight trend', () => {
     expect(assess(-0.2, 'cut', 90).kcalChange).toBe(-200) // 0.22%/week: too slow
     expect(assess(-1.2, 'cut', 90).kcalChange).toBe(200) // 1.33%/week: too fast
     expect(assess(-0.6, 'cut', 90).kcalChange).toBe(0)
+    expect(assess(0.3, 'maintain', 80).kcalChange).toBe(-200)
+    expect(assess(-0.3, 'maintain', 80).kcalChange).toBe(200)
+    expect(assess(0.1, 'maintain', 80).kcalChange).toBe(0)
   })
 
   it('waits two weeks between reviews', () => {
