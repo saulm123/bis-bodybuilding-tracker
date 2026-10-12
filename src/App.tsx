@@ -23,18 +23,20 @@ import BloodsPage from './pages/health/BloodsPage'
 import PanelEditor from './pages/health/PanelEditor'
 import SupplementsEditor from './pages/health/SupplementsEditor'
 import ReminderSync from './components/ReminderSync'
+import TabIcon from './components/TabIcon'
+import ErrorBoundary from './components/ErrorBoundary'
 
 // The cycle log only exists in the FOSS build. Vite replaces VITE_FLAVOR at build
 // time, so in the Play build this whole import disappears from the app.
 const CyclePage = import.meta.env.VITE_FLAVOR !== 'play' ? lazy(() => import('./pages/health/CyclePage')) : null
 
 const tabs = [
-  { to: '/today', label: 'Today', icon: '◎' },
-  { to: '/train', label: 'Train', icon: '▮▮' },
-  { to: '/food', label: 'Food', icon: '◐' },
-  { to: '/health', label: 'Health', icon: '♥' },
-  { to: '/more', label: 'More', icon: '≡' },
-]
+  { to: '/today', label: 'Today', icon: 'today' },
+  { to: '/train', label: 'Train', icon: 'train' },
+  { to: '/food', label: 'Food', icon: 'food' },
+  { to: '/health', label: 'Health', icon: 'health' },
+  { to: '/more', label: 'More', icon: 'more' },
+] as const
 
 export default function App() {
   const settings = useSettings()
@@ -44,6 +46,7 @@ export default function App() {
   return (
     <div className="app">
       <main className="screen">
+        <ErrorBoundary>
         <Routes>
           <Route path="/today" element={<Today />} />
           <Route path="/train" element={<TrainHome />} />
@@ -69,13 +72,14 @@ export default function App() {
           <Route path="/more" element={<More />} />
           <Route path="*" element={<Navigate to="/today" replace />} />
         </Routes>
+        </ErrorBoundary>
       </main>
       <RestTimerBar />
       <ReminderSync />
       <nav className="tabbar">
         {tabs.map((t) => (
           <NavLink key={t.to} to={t.to} className="tab">
-            <span className="tab-icon" aria-hidden="true">{t.icon}</span>
+            <TabIcon name={t.icon} />
             <span>{t.label}</span>
           </NavLink>
         ))}

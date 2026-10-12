@@ -35,14 +35,14 @@ h1 { font-size: 26px; margin: 0 0 8px; }
 .screen {
   flex: 1;
   overflow-y: auto;
-  padding: calc(16px + env(safe-area-inset-top)) 16px 24px;
+  padding: calc(16px + max(env(safe-area-inset-top), var(--safe-area-inset-top, 0px))) 16px 24px;
 }
 
 .tabbar {
   display: grid;
   grid-template-columns: repeat(5, 1fr);
-  height: calc(var(--tabbar-h) + env(safe-area-inset-bottom));
-  padding-bottom: env(safe-area-inset-bottom);
+  height: calc(var(--tabbar-h) + max(env(safe-area-inset-bottom), var(--safe-area-inset-bottom, 0px)));
+  padding-bottom: max(env(safe-area-inset-bottom), var(--safe-area-inset-bottom, 0px));
   background: var(--surface);
   border-top: 1px solid var(--border);
 }
@@ -59,7 +59,6 @@ h1 { font-size: 26px; margin: 0 0 8px; }
   font-size: 13px;
 }
 
-.tab-icon { font-size: 20px; line-height: 1; }
 .tab.active { color: var(--accent); }
 
 h2 { font-size: 19px; margin: 0 0 4px; }
@@ -239,3 +238,9 @@ h3 { font-size: 16px; margin: 4px 0 0; color: var(--text-muted); font-weight: 60
 .input.time { width: 120px; }
 .inactive { opacity: 0.55; }
 select { appearance: none; }
+
+/* ---- Polish ---- */
+.plain-link { color: var(--text); text-decoration: none; display: block; }
+.error-text { white-space: pre-wrap; background: var(--surface); padding: 12px; border-radius: 12px; font-size: 13px; color: var(--danger); }
+.tab svg { display: block; }
+.pill { text-decoration: none; }

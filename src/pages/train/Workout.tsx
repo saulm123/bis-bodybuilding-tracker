@@ -7,6 +7,7 @@ import { formatDate } from '../../lib/dates'
 import { formatRest, formatSets, hitTopOfRange, lastPerformance } from '../../training/logic'
 import { addSet, deleteSession, exerciseHistory, finishSession, removeSet, updateSet, useProgram } from '../../training/store'
 import { startRest } from '../../training/restTimer'
+import { useWakeLock } from '../../lib/useWakeLock'
 
 export default function Workout() {
   const { id = '' } = useParams()
@@ -15,6 +16,7 @@ export default function Workout() {
   const session = useLiveQuery(() => db.sessions.get(id), [id])
   const sets = useLiveQuery(() => db.sets.where('sessionId').equals(id).toArray(), [id])
   const [confirmDelete, setConfirmDelete] = useState(false)
+  useWakeLock(!!session && !session.finishedAt) // keep the screen on mid-workout
 
   if (session === undefined || !sets || !program) return null
   if (!session) return <p className="muted">That workout no longer exists. <Link to="/train">Back to Train</Link></p>

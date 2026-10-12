@@ -6,6 +6,12 @@ const config: CapacitorConfig = {
   webDir: 'dist',
   backgroundColor: '#111111',
   plugins: {
+    // Edge-to-edge: the app draws behind the status/nav bars and pads itself with safe-area insets.
+    SystemBars: {
+      insetsHandling: 'css',
+      initialViewportFitValueHint: 'cover',
+      style: 'DARK',
+    },
     // Native networking for Open Food Facts requests (its search service has no CORS).
     CapacitorHttp: {
       enabled: true,

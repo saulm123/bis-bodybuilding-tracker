@@ -6,6 +6,7 @@ import TargetsEditor from '../components/TargetsEditor'
 import BackupSection from '../components/BackupSection'
 import RemindersSection from '../components/RemindersSection'
 import RangesSection from '../components/RangesSection'
+import InstallHint from '../components/InstallHint'
 import type { Phase } from '../db/schema'
 import { APP_VERSION, FLAVOR } from '../flavor'
 
@@ -60,12 +61,17 @@ export default function More() {
 
       <BackupSection settings={settings} />
 
+      <InstallHint />
+
       <div className="card about">
         <img src="favicon.svg" alt="" width={56} height={56} className="logo" />
         <div>
           <strong>BIS Bodybuilding Tracker</strong>
           <p className="muted small">
             Version {APP_VERSION} ({FLAVOR}). All your data stays on this device. The only thing sent anywhere is food lookups to Open Food Facts.
+          </p>
+          <p className="small">
+            <a href="https://github.com/saulm123/bis-bodybuilding-tracker">Source code</a> · <a href="privacy.html">Privacy policy</a> · MIT licence
           </p>
         </div>
       </div>
