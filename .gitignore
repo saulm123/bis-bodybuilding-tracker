@@ -18,3 +18,4 @@ android/local.properties
 android/capacitor-cordova-android-plugins/build/
 android/.idea/
 *.iml
+previews/
